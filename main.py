@@ -38,10 +38,9 @@ def load_faq():
 # Carrega o FAQ ao iniciar a aplicação
 load_faq()
 
-# --- NOVO: Mapeamento de palavras-chave para botões relacionados ---
-# ISTO É CRÍTICO! VOCÊ DEVE AJUSTAR ESTE DICIONÁRIO COM OS IDs E PALAVRAS-CHAVE REAIS DO SEU FAQ.JSON.
-# Cada CHAVE (ex: "boas_vindas_ou_nao_entendi", "chopp", "entrega") deve ser uma palavra-chave
-# ou identificador que você quer que dispare um conjunto ESPECÍFICO de botões.
+# --- ISTO É CRÍTICO! VOCÊ DEVE AJUSTAR ESTE DICIONÁRIO COM OS IDs E PALAVRAS-CHAVE REAIS DO SEU FAQ.JSON. ---
+# Cada CHAVE (ex: "boas_vindas_ou_nao_entendi", "chopp", "entrega", "como pedir")
+# deve ser uma palavra-chave ou identificador que você quer que dispare um conjunto ESPECÍFICO de botões.
 #
 # 'text': É o texto que APARECE no botão no Telegram.
 # 'faq_id': É o ID EXATO (como string) de uma entrada NO SEU FAQ.JSON que será usada
@@ -64,14 +63,22 @@ RELATED_BUTTONS_MAP = {
         {"text": "Tipos de chope?", "faq_id": "7"},         # EX: Supondo que FAQ ID "7" é sobre "Tipos de Chope"
         {"text": "Como pedir meu chope?", "faq_id": "5"}
     ],
-    # --- VOCÊ DEVE ADICIONAR MAIS ENTRADAS AQUI PARA PERSONALIZAR OS BOTÕES ---
-    # EX: Cenário 3: Quando a palavra-chave "entrega" é detectada.
+    # --- NOVA ENTRADA QUE VOCÊ PRECISA CONFIGURAR ---
+    # Cenário 3: Quando a palavra-chave "como pedir" ou "pedido" é detectada (do seu FAQ ID 5).
+    "como pedir": [ # Use a palavra-chave mais relevante que você deseja para esse conjunto
+        {"text": "Dados para cadastro", "faq_id": "5"},     # FAQ ID da própria pergunta de "como pedir"
+        {"text": "Formas de pagamento", "faq_id": "10"},    # EX: Supondo que FAQ ID "10" é para "Formas de Pagamento"
+        {"text": "Horários de entrega", "faq_id": "3"},     # FAQ ID para Horários de entrega
+        {"text": "Áreas de atendimento", "faq_id": "6"}     # FAQ ID para Lojas e regiões
+    ],
+    # --- ADICIONE MAIS ENTRADAS AQUI PARA OUTRAS PALAVRAS-CHAVE DO SEU FAQ.JSON ---
+    # EX: Cenário 4: Quando a palavra-chave "entrega" é detectada.
     "entrega": [
         {"text": "Verificar horários de entrega", "faq_id": "3"}, # FAQ ID para Horários de entrega
         {"text": "Regiões atendidas", "faq_id": "6"},       # FAQ ID para Lojas e regiões
         {"text": "Status do meu pedido", "faq_id": "11"}    # EX: Supondo que FAQ ID "11" é sobre "Status do Pedido"
     ],
-    # EX: Cenário 4: Quando a palavra-chave "preço" é detectada.
+    # EX: Cenário 5: Quando a palavra-chave "preco" é detectada.
     "preco": [
         {"text": "Promoções atuais", "faq_id": "4"},       # FAQ ID para Preços e promoções
         {"text": "Preço do barril de 50L", "faq_id": "12"}, # EX: Supondo que FAQ ID "12" é para "Preço do Barril de 50L"
@@ -96,21 +103,34 @@ def find_faq_answer(message_text):
         matched_keyword_for_buttons = "boas_vindas_ou_nao_entendi" # Usa esta chave para buscar botões padrão
     else:
         # Busca no FAQ por palavra-chave para encontrar a resposta principal
+        # Prioriza a correspondência de palavras-chave mais longas para ser mais específico
+        best_match_keyword = ""
+        best_match_entry_id = None
+        
         for entry_id, entry_data in faq_data.items():
             keywords = [kw.lower() for kw in entry_data.get('palavras_chave', [])]
             for keyword in keywords:
-                if keyword in message_text_lower:
-                    found_answer = entry_data.get('resposta')
-                    matched_keyword_for_buttons = keyword # Usa a palavra-chave que encontrou para buscar botões específicos
-                    break # Sai do loop de palavras-chave se uma correspondência for encontrada
-            if found_answer:
-                break # Sai do loop de entradas do FAQ se uma resposta for encontrada
+                # Verifica se a palavra-chave está na mensagem E se é uma correspondência mais longa/melhor
+                if keyword in message_text_lower and len(keyword) > len(best_match_keyword):
+                    best_match_keyword = keyword
+                    best_match_entry_id = entry_id
+                    # Não colocamos 'break' aqui para continuar procurando pela melhor (mais longa) correspondência
+        
+        if best_match_entry_id:
+            found_answer = faq_data[best_match_entry_id].get('resposta')
+            matched_keyword_for_buttons = best_match_keyword
+
 
     # Se uma resposta específica foi encontrada no FAQ
     if found_answer:
         # Pega os botões relacionados usando a palavra-chave que disparou a resposta,
-        # ou usa os botões padrão se não houver um mapeamento específico.
+        # ou usa os botões padrão se não houver um mapeamento específico para essa palavra-chave.
         buttons_to_send = RELATED_BUTTONS_MAP.get(matched_keyword_for_buttons, [])
+        # Se não encontrou botões específicos para a palavra-chave, mas encontrou uma resposta,
+        # pode ser útil oferecer os botões padrão de "boas-vindas" como um fallback.
+        if not buttons_to_send: # Se a lista de botões estiver vazia
+            buttons_to_send = RELATED_BUTTONS_MAP.get("boas_vindas_ou_nao_entendi", [])
+
         return found_answer, buttons_to_send
     else:
         # Resposta padrão se nenhuma correspondência específica for encontrada
@@ -151,7 +171,7 @@ def webhook():
 
                     # Cria o teclado Inline (botões) se houver botões relacionados
                     markup = None
-                    if related_buttons:
+                    if related_buttons: # Se related_buttons não for uma lista vazia
                         markup = telebot.types.InlineKeyboardMarkup()
                         for btn_info in related_buttons:
                             # O callback_data deve ser uma string. Usamos o FAQ ID.
