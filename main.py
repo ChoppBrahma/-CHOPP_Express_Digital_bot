@@ -3,7 +3,7 @@ import json
 from flask import Flask, request, jsonify
 import telebot
 import traceback
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton # Para botões
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 app = Flask(__name__)
 
@@ -34,13 +34,13 @@ def load_faq():
 # Chama a função para carregar o FAQ quando o bot inicia
 load_faq()
 
-# --- Função para encontrar a melhor correspondência no FAQ (AGORA MAIS DIRETA) ---
+# --- Função para encontrar a melhor correspondência no FAQ (MAIS DIRETA) ---
 def find_faq_answer(query):
     if not faq_data:
         print("DEBUG: FAQ data não carregado em find_faq_answer.")
         return None, None
 
-    normalized_query = query.lower().strip() # Normaliza e remove espaços extras
+    normalized_query = query.lower().strip()
 
     # Prioriza correspondência EXATA da pergunta do usuário com uma palavra-chave
     for faq_id, entry in faq_data.items():
@@ -51,13 +51,9 @@ def find_faq_answer(query):
                 return entry.get('resposta'), faq_id
     
     # Se não houver correspondência exata, busca por uma palavra-chave CONTIDA na pergunta
-    # OU pergunta do FAQ contida na query (para termos mais específicos)
-    # Contabiliza quantas palavras-chave de uma pergunta do FAQ aparecem na query do usuário.
     best_faq_id_by_keyword_hits = None
     max_keyword_hits = 0
     
-    # Limiar mínimo de "hits" para considerar uma resposta
-    # Se uma pergunta do FAQ precisa de pelo menos 1 palavra-chave para ser considerada
     MIN_HITS_THRESHOLD = 1 
 
     for faq_id, entry in faq_data.items():
@@ -65,15 +61,12 @@ def find_faq_answer(query):
         current_hits = 0
         
         for keyword in keywords:
-            # Verifica se a palavra-chave (ou parte dela) está contida na pergunta do usuário,
-            # ou se a pergunta do usuário está contida na palavra-chave (útil para frases exatas)
             if keyword in normalized_query or normalized_query in keyword:
                 current_hits += 1
         
-        # Também verifica se a própria pergunta do FAQ está contida na query do usuário
         pergunta_faq_normalizada = entry.get('pergunta', '').lower().strip()
         if pergunta_faq_normalizada and pergunta_faq_normalizada in normalized_query:
-            current_hits += 1 # Conta como mais um hit se a pergunta completa do FAQ estiver na query
+            current_hits += 1 
 
         if current_hits > max_keyword_hits:
             max_keyword_hits = current_hits
@@ -88,13 +81,13 @@ def find_faq_answer(query):
     return None, None
 
 
-# --- Função para encontrar e gerar botões de perguntas relacionadas (AGORA MAIS DIRETA) ---
-def get_related_buttons(query, primary_faq_id=None, max_buttons=3):
+# --- Função para encontrar e gerar botões de perguntas relacionadas (AGORA COM MAIS BOTÕES) ---
+# Aumentei o max_buttons para 5. Você pode ajustar esse valor se precisar de mais.
+def get_related_buttons(query, primary_faq_id=None, max_buttons=5): # <<< AQUI A MUDANÇA
     related_buttons = []
     normalized_query = query.lower().strip()
     
-    # Limiar mínimo de hits para considerar uma pergunta "relacionada" para o botão
-    RELATED_HITS_THRESHOLD = 1 # Pelo menos 1 palavra-chave em comum
+    RELATED_HITS_THRESHOLD = 1 
 
     print(f"DEBUG: Buscando botões relacionados para query '{query}', excluindo ID '{primary_faq_id}'.")
 
@@ -108,8 +101,6 @@ def get_related_buttons(query, primary_faq_id=None, max_buttons=3):
         current_related_hits = 0
         for keyword in keywords + [pergunta_text]:
             if not keyword: continue
-            # Verifica se a palavra-chave (ou parte dela) está contida na pergunta do usuário,
-            # ou se a pergunta do usuário está contida na palavra-chave (para frases exatas)
             if keyword in normalized_query or normalized_query in keyword:
                 current_related_hits += 1
         
