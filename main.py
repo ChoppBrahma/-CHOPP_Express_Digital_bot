@@ -83,7 +83,7 @@ def find_faq_answer(query):
 
 # --- Função para encontrar e gerar botões de perguntas relacionadas (AGORA COM MAIS BOTÕES) ---
 # Aumentei o max_buttons para 5. Você pode ajustar esse valor se precisar de mais.
-def get_related_buttons(query, primary_faq_id=None, max_buttons=5): # <<< AQUI A MUDANÇA
+def get_related_buttons(query, primary_faq_id=None, max_buttons=10): # <<< AQUI A MUDANÇA
     related_buttons = []
     normalized_query = query.lower().strip()
     
