@@ -2,235 +2,207 @@ import os
 import json
 from flask import Flask, request, jsonify
 import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 import traceback
-import re
-from unidecode import unidecode
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 app = Flask(__name__)
 
-# --- Configuração do Token do Bot ---
+# --- Configurações do Bot Telegram ---
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 if not BOT_TOKEN:
     print("ERRO: Variável de ambiente BOT_TOKEN não definida.")
     exit(1)
-
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# --- Variável Global para o FAQ ---
+# --- Variável global para armazenar o FAQ ---
 faq_data = {}
 
-# --- Função para Carregar o FAQ ---
 def load_faq():
     global faq_data
     try:
         with open('faq.json', 'r', encoding='utf-8') as f:
             raw_faq = json.load(f)
             faq_data = {str(k): v for k, v in raw_faq.items()}
-        print(f"FAQ carregado com sucesso! Total de {len(faq_data)} entradas.")
+        print(f"FAQ carregado com sucesso! Tamanho do FAQ: {len(faq_data)} entradas.")
     except FileNotFoundError:
-        print("Erro crítico: Arquivo faq.json não encontrado. Certifique-se de que ele está na mesma pasta do main.py.")
+        print("Erro: Arquivo faq.json não encontrado. O bot NÃO poderá responder via FAQ.")
+        faq_data = {}
     except json.JSONDecodeError as e:
-        print(f"Erro ao decodificar JSON do faq.json: Verifique a sintaxe do arquivo. Erro: {e}")
-    except Exception as e:
-        print(f"Erro inesperado ao carregar FAQ: {e}")
+        print(f"Erro ao decodificar JSON do faq.json: {e}. Verifique a sintaxe do arquivo.")
+        faq_data = {}
 
+# Chama a função para carregar o FAQ quando o bot inicia
 load_faq()
 
-# --- Função para Normalizar Texto ---
-def normalize_text(text):
-    if not isinstance(text, str):
-        return ""
-    return unidecode(text).lower()
-
-# --- Função para Encontrar a Melhor FAQ ---
+# --- Função para encontrar a melhor correspondência no FAQ (MAIS DIRETA) ---
 def find_faq_answer(query):
-    normalized_query = normalize_text(query)
-    best_match_id = None
-    max_score = 0
-    found_by_direct_keyword = False
+    if not faq_data:
+        print("DEBUG: FAQ data não carregado em find_faq_answer.")
+        return None, None
 
-    for faq_id, faq in faq_data.items():
-        normalized_keywords = [normalize_text(kw) for kw in faq.get('palavras_chave', [])]
-        for kw in normalized_keywords:
-            if re.search(r'\b' + re.escape(kw) + r'\b', normalized_query):
-                best_match_id = faq_id
-                found_by_direct_keyword = True
-                break
-        if found_by_direct_keyword:
-            break
+    normalized_query = query.lower().strip()
+
+    # Prioriza correspondência EXATA da pergunta do usuário com uma palavra-chave
+    for faq_id, entry in faq_data.items():
+        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
+        for keyword in keywords:
+            if normalized_query == keyword:
+                print(f"DEBUG: Correspondência EXATA de query com keyword! FAQ ID: {faq_id}, Keyword: '{keyword}'")
+                return entry.get('resposta'), faq_id
     
-    if found_by_direct_keyword:
-        return best_match_id, found_by_direct_keyword
+    # Se não houver correspondência exata, busca por uma palavra-chave CONTIDA na pergunta
+    best_faq_id_by_keyword_hits = None
+    max_keyword_hits = 0
+    
+    MIN_HITS_THRESHOLD = 1 
 
-    for faq_id, faq in faq_data.items():
-        normalized_pergunta = normalize_text(faq.get('pergunta', ''))
-        score = 0
-        query_words = normalized_query.split()
+    for faq_id, entry in faq_data.items():
+        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
+        current_hits = 0
         
-        for word in query_words:
-            if word and word in normalized_pergunta:
-                score += 1
+        for keyword in keywords:
+            if keyword in normalized_query or normalized_query in keyword:
+                current_hits += 1
+        
+        pergunta_faq_normalizada = entry.get('pergunta', '').lower().strip()
+        if pergunta_faq_normalizada and pergunta_faq_normalizada in normalized_query:
+            current_hits += 1 
 
-        if score > max_score:
-            max_score = score
-            best_match_id = faq_id
+        if current_hits > max_keyword_hits:
+            max_keyword_hits = current_hits
+            best_faq_id_by_keyword_hits = faq_id
 
-    return best_match_id, found_by_direct_keyword
+    print(f"DEBUG: Melhor correspondência por hits: ID {best_faq_id_by_keyword_hits} com {max_keyword_hits} hits.")
 
-# --- Função para Gerar Botões de Perguntas Relacionadas ---
-def get_related_buttons(query, primary_faq_id=None, max_buttons=5):
-    normalized_query = normalize_text(query)
-    related_faqs_candidates = []
-    seen_ids = set()
+    if max_keyword_hits >= MIN_HITS_THRESHOLD and best_faq_id_by_keyword_hits:
+        return faq_data[best_faq_id_by_keyword_hits].get('resposta'), best_faq_id_by_keyword_hits
+    
+    print("DEBUG: Nenhuma correspondência boa encontrada por hits de palavras-chave.")
+    return None, None
 
-    if primary_faq_id:
-        seen_ids.add(primary_faq_id)
 
-    for faq_id, faq in faq_data.items():
-        if faq_id in seen_ids:
+# --- Função para encontrar e gerar botões de perguntas relacionadas (AGORA COM MAIS BOTÕES) ---
+# Aumentei o max_buttons para 5. Você pode ajustar esse valor se precisar de mais.
+def get_related_buttons(query, primary_faq_id=None, max_buttons=10): # <<< AQUI A MUDANÇA
+    related_buttons = []
+    normalized_query = query.lower().strip()
+    
+    RELATED_HITS_THRESHOLD = 1 
+
+    print(f"DEBUG: Buscando botões relacionados para query '{query}', excluindo ID '{primary_faq_id}'.")
+
+    for faq_id, entry in faq_data.items():
+        if faq_id == primary_faq_id: 
             continue
 
-        normalized_keywords = [normalize_text(kw) for kw in faq.get('palavras_chave', [])]
-        normalized_pergunta = normalize_text(faq.get('pergunta', ''))
+        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
+        pergunta_text = entry.get('pergunta', '').lower().strip()
+
+        current_related_hits = 0
+        for keyword in keywords + [pergunta_text]:
+            if not keyword: continue
+            if keyword in normalized_query or normalized_query in keyword:
+                current_related_hits += 1
         
-        is_relevant = False
+        if current_related_hits >= RELATED_HITS_THRESHOLD:
+            if (faq_id, entry.get('pergunta')) not in related_buttons:
+                related_buttons.append((faq_id, entry.get('pergunta')))
         
-        for kw in normalized_keywords:
-            if kw and kw in normalized_query:
-                is_relevant = True
-                break
-        
-        if not is_relevant:
-            if any(word and word in normalized_pergunta for word in normalized_query.split()):
-                is_relevant = True
+        if len(related_buttons) >= max_buttons: 
+            break
 
-        if not is_relevant:
-            if any(re.search(r'\b' + re.escape(q_word) + r'\b', kw) for q_word in normalized_query.split() for kw in normalized_keywords):
-                is_relevant = True
-            if not is_relevant and any(re.search(r'\b' + re.escape(q_word) + r'\b', normalized_pergunta) for q_word in normalized_query.split()):
-                is_relevant = True
+    if related_buttons:
+        markup = InlineKeyboardMarkup()
+        for faq_id, pergunta in related_buttons:
+            markup.add(InlineKeyboardButton(pergunta, callback_data=str(faq_id))) 
+        print(f"DEBUG: Botões relacionados gerados: {len(related_buttons)}.")
+        return markup
+    print("DEBUG: Nenhum botão relacionado encontrado.")
+    return None 
 
-        if is_relevant:
-            related_faqs_candidates.append({'id': faq_id, 'pergunta': faq['pergunta']})
+@app.route('/')
+def health_check():
+    print("Requisição GET recebida no / (Health Check)")
+    return "Bot está funcionando!", 200
 
-    selected_buttons = []
-    for faq_item in related_faqs_candidates:
-        if len(selected_buttons) < max_buttons:
-            button_text = faq_item['pergunta']
-            if len(button_text.encode('utf-8')) > 60:
-                button_text = button_text[:25] + "..."
-            
-            selected_buttons.append(
-                InlineKeyboardButton(
-                    text=button_text,
-                    callback_data=str(faq_item['id'])
-                )
-            )
-
-    if '54' in faq_data and '54' not in seen_ids:
-        if not selected_buttons or len(selected_buttons) < max_buttons:
-            selected_buttons.append(
-                InlineKeyboardButton(
-                    text=faq_data['54']['pergunta'],
-                    callback_data='54'
-                )
-            )
-
-    markup = InlineKeyboardMarkup(row_width=1)
-    markup.add(*selected_buttons)
-    return markup
-
-# --- Handler para Mensagens de Texto (Quando o Usuário Digita) ---
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    chat_id = message.chat.id
-    user_query = message.text
-
-    print(f"Mensagem recebida do chat {chat_id}: '{user_query}'")
-
-    if not faq_data:
-        bot.send_message(chat_id, "Desculpe, meu banco de dados de FAQs não foi carregado. Por favor, tente novamente mais tarde ou contate o suporte técnico.")
-        print("ERRO: FAQ_DATA está vazio. Bot não pode responder.")
-        return
-
-    if '54' in faq_data:
-        keywords_54 = [normalize_text(kw) for kw in faq_data['54'].get('palavras_chave', [])]
-        pergunta_54 = normalize_text(faq_data['54'].get('pergunta', ''))
-        
-        if normalize_text(user_query) in keywords_54 or normalize_text(user_query) == pergunta_54:
-            response_text = faq_data['54']['resposta']
-            bot.send_message(chat_id, response_text, parse_mode='Markdown')
-            print(f"----> Resposta enviada para ID 54 por query direta para o chat {chat_id}.")
-            return
-
-    best_match_id, _ = find_faq_answer(user_query)
-
-    if best_match_id:
-        response_text = faq_data[best_match_id]['resposta']
-        markup = get_related_buttons(user_query, primary_faq_id=best_match_id)
-        
-        bot.send_message(chat_id, response_text, parse_mode='Markdown', reply_markup=markup)
-        print(f"----> Resposta enviada para ID {best_match_id} com botões relacionados para o chat {chat_id}.")
-    else:
-        if '54' in faq_data:
-            response_text = faq_data['54']['resposta']
-            bot.send_message(chat_id, response_text, parse_mode='Markdown')
-            print(f"----> Nenhuma FAQ correspondente encontrada. Enviando resposta padrão (ID 54) para o chat {chat_id}.")
-        else:
-            bot.send_message(chat_id, "Desculpe, não consegui encontrar uma resposta para sua pergunta e a opção de suporte não está disponível. Por favor, tente reformular sua pergunta.")
-            print(f"----> ERRO: Nenhuma FAQ correspondente e ID 54 não disponível. Chat {chat_id}.")
-
-# --- Handler para Callback Queries (Cliques nos Botões Inline) ---
-@bot.callback_query_handler(func=lambda call: True)
-def handle_callback_query(call):
-    chat_id = call.message.chat.id
-    callback_data = call.data
-    
-    print(f"Callback Query recebida do chat {chat_id} com dados: '{callback_data}'")
-
-    bot.answer_callback_query(call.id, text="Carregando resposta...") 
-
-    if callback_data in faq_data:
-        response_text = faq_data[callback_data]['resposta']
-        markup = get_related_buttons(faq_data[callback_data]['pergunta'], primary_faq_id=callback_data)
-        
-        bot.edit_message_text(
-            chat_id=chat_id,
-            message_id=call.message.message_id,
-            text=response_text,
-            parse_mode='Markdown',
-            reply_markup=markup
-        )
-        print(f"----> Resposta da Callback Query enviada com sucesso para o chat {chat_id}.")
-    else:
-        bot.send_message(chat_id, "Desculpe, não encontrei a informação solicitada pelo botão.", parse_mode='Markdown')
-        print(f"----> ERRO: FAQ ID '{callback_data}' não encontrado para Callback Query.")
-
-# --- Rota do Webhook para o Render ---
-@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+@app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        json_string = request.get_data().decode('utf-8')
-        update = telebot.types.Update.de_json(json_string)
-        
+        update_json = request.get_json()
+        print("Requisição POST recebida em /webhook")
+
         try:
-            bot.process_new_updates([update])
-            print("Update processado com sucesso pelo Telebot.")
+            update = telebot.types.Update.de_json(json.dumps(update_json))
+
+            if update.message:
+                message = update.message
+                chat_id = message.chat.id
+                text = message.text
+
+                print(f"----> Mensagem recebida do chat {chat_id}: '{text}'")
+
+                response_text = ""
+                markup = None 
+
+                if text:
+                    faq_answer, faq_id_matched = find_faq_answer(text)
+
+                    if faq_answer:
+                        response_text = faq_answer
+                        print(f"----> Resposta principal encontrada no FAQ (ID: {faq_id_matched}): '{response_text}'")
+                        markup = get_related_buttons(text, faq_id_matched)
+                        
+                    else:
+                        response_text = "Desculpe, não consegui encontrar uma resposta para sua pergunta no meu FAQ. Por favor, tente perguntar de outra forma ou consulte nosso site oficial."
+                        print(f"----> Nenhuma resposta principal encontrada no FAQ para: '{text}'. Enviando fallback genérico.")
+                    
+                    try:
+                        bot.send_message(chat_id, response_text, reply_markup=markup, parse_mode='Markdown')
+                        print(f"----> Mensagem enviada com sucesso para o chat {chat_id}.")
+                    except telebot.apihelper.ApiTelegramException as e:
+                        print(f"ERRO Telegram API ao enviar mensagem: {e}")
+                        if "Can't parse message text" in str(e):
+                            print("DICA: Texto pode ter Markdown inválido. Tentando enviar sem parse_mode...")
+                            bot.send_message(chat_id, response_text, parse_mode=None, reply_markup=markup) 
+                        else:
+                            pass
+                    except Exception as e:
+                        print(f"ERRO geral ao enviar mensagem: {e}")
+                else:
+                    print(f"----> Mensagem recebida sem texto (ex: foto, sticker). Ignorando por enquanto.")
+
+            elif update.callback_query:
+                callback_query = update.callback_query
+                chat_id = callback_query.message.chat.id
+                callback_data = callback_query.data 
+
+                print(f"----> Callback Query recebida do chat {chat_id}: '{callback_data}'")
+                bot.answer_callback_query(callback_query.id) 
+
+                try:
+                    if callback_data in faq_data:
+                        response_text = faq_data[callback_data].get('resposta')
+                        bot.send_message(chat_id, response_text, parse_mode='Markdown')
+                        print(f"----> Resposta da Callback Query enviada com sucesso para o chat {chat_id}.")
+                    else:
+                        bot.send_message(chat_id, "Desculpe, não encontrei a informação solicitada pelo botão.", parse_mode='Markdown')
+                        print(f"----> ERRO: FAQ ID '{callback_data}' não encontrado para Callback Query.")
+                except Exception as e:
+                    print(f"ERRO ao processar Callback Query para FAQ ID {callback_data}: {e}")
+                    print(traceback.format_exc())
+            
+            else:
+                print("----> Update recebido sem as chaves 'message' ou 'callback_query'. Pode ser outro tipo de atualização (edited_message, channel_post, etc.).")
+
         except Exception as e:
-            print(f"ERRO ao processar update do webhook: {e}")
+            print(f"ERRO INESPERADO no processamento do webhook: {e}")
             print(traceback.format_exc())
-        
+
+        print("Update processado. Retornando 200 OK.")
         return 'OK', 200
     else:
         return 'Método não permitido', 405
 
-# --- Rota Inicial (para verificar se o bot está rodando) ---
-@app.route('/')
-def index():
-    return 'Bot de FAQ está online e rodando!'
-
-# --- Execução Principal do Aplicativo Flask ---
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
