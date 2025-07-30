@@ -40,7 +40,8 @@ load_faq()
 
 # --- ISTO É CRÍTICO! VOCÊ DEVE AJUSTAR ESTE DICIONÁRIO COM OS IDs E PALAVRAS-CHAVE REAIS DO SEU FAQ.JSON. ---
 # Cada CHAVE (ex: "boas_vindas_ou_nao_entendi", "chopp", "entrega", "como pedir")
-# deve ser uma palavra-chave ou identificador que você quer que dispare um conjunto ESPECÍFICO de botões.
+# deve ser uma palavra-chave OU um identificador lógico (como "boas_vindas_ou_nao_entendi")
+# que você quer que dispare um conjunto ESPECÍFICO de botões.
 #
 # 'text': É o texto que APARECE no botão no Telegram.
 # 'faq_id': É o ID EXATO (como string) de uma entrada NO SEU FAQ.JSON que será usada
@@ -50,35 +51,41 @@ RELATED_BUTTONS_MAP = {
     # As palavras-chave "oi", "olá", "/start", etc., ou a ausência de correspondência,
     # cairão aqui.
     "boas_vindas_ou_nao_entendi": [
-        {"text": "Quantos litros de chope?", "faq_id": "2"},  # ID da pergunta sobre litros
-        {"text": "Horários de entrega?", "faq_id": "3"},    # ID da pergunta sobre entrega
-        {"text": "Preços e promoções?", "faq_id": "4"},     # ID da pergunta sobre preços
-        {"text": "Lojas e regiões?", "faq_id": "6"},       # ID da pergunta sobre lojas
-        {"text": "Como pedir?", "faq_id": "5"}             # ID da pergunta sobre como pedir
+        {"text": "Quantos litros de chope?", "faq_id": "2"},  # EX: Supondo ID "2" para essa pergunta no seu faq.json
+        {"text": "Horários de entrega?", "faq_id": "3"},    # EX: Supondo ID "3" para Horários de entrega
+        {"text": "Preços e promoções?", "faq_id": "4"},     # EX: Supondo ID "4" para Preços e promoções
+        {"text": "Lojas e regiões?", "faq_id": "6"},       # EX: Supondo ID "6" para Lojas e regiões
+        {"text": "Como pedir?", "faq_id": "5"}             # EX: Supondo ID "5" para Como pedir
     ],
     # Cenário 2: Quando a palavra-chave "chopp" é detectada na mensagem do usuário.
+    # A chave "chopp" AQUI deve ser uma das 'palavras_chave' que você tem em alguma entrada do seu faq.json.
     "chopp": [
-        {"text": "Quantos litros de chope?", "faq_id": "2"},
-        {"text": "Promoções de chope?", "faq_id": "4"},
+        {"text": "Quantos litros de chope?", "faq_id": "2"}, # Reutiliza FAQ ID 2
+        {"text": "Promoções de chope?", "faq_id": "4"},     # Reutiliza FAQ ID 4
         {"text": "Tipos de chope?", "faq_id": "7"},         # EX: Supondo que FAQ ID "7" é sobre "Tipos de Chope"
-        {"text": "Como pedir meu chope?", "faq_id": "5"}
+        {"text": "Como pedir meu chope?", "faq_id": "5"}    # Reutiliza FAQ ID 5
     ],
-    # --- NOVA ENTRADA QUE VOCÊ PRECISA CONFIGURAR ---
-    # Cenário 3: Quando a palavra-chave "como pedir" ou "pedido" é detectada (do seu FAQ ID 5).
-    "como pedir": [ # Use a palavra-chave mais relevante que você deseja para esse conjunto
+    # --- VOCÊ DEVE ADICIONAR MAIS ENTRADAS AQUI PARA PERSONALIZAR OS BOTÕES ---
+    # EX: Cenário 3: Quando a palavra-chave "como pedir" ou "pedido" é detectada.
+    # A CHAVE "como pedir" AQUI deve ser uma das 'palavras_chave' que você tem em alguma entrada do seu faq.json
+    # que leve à resposta de como pedir.
+    "como pedir": [
         {"text": "Dados para cadastro", "faq_id": "5"},     # FAQ ID da própria pergunta de "como pedir"
         {"text": "Formas de pagamento", "faq_id": "10"},    # EX: Supondo que FAQ ID "10" é para "Formas de Pagamento"
         {"text": "Horários de entrega", "faq_id": "3"},     # FAQ ID para Horários de entrega
         {"text": "Áreas de atendimento", "faq_id": "6"}     # FAQ ID para Lojas e regiões
     ],
-    # --- ADICIONE MAIS ENTRADAS AQUI PARA OUTRAS PALAVRAS-CHAVE DO SEU FAQ.JSON ---
     # EX: Cenário 4: Quando a palavra-chave "entrega" é detectada.
+    # A CHAVE "entrega" AQUI deve ser uma das 'palavras_chave' que você tem em alguma entrada do seu faq.json
+    # que leve à resposta sobre entregas.
     "entrega": [
         {"text": "Verificar horários de entrega", "faq_id": "3"}, # FAQ ID para Horários de entrega
         {"text": "Regiões atendidas", "faq_id": "6"},       # FAQ ID para Lojas e regiões
         {"text": "Status do meu pedido", "faq_id": "11"}    # EX: Supondo que FAQ ID "11" é sobre "Status do Pedido"
     ],
     # EX: Cenário 5: Quando a palavra-chave "preco" é detectada.
+    # A CHAVE "preco" AQUI deve ser uma das 'palavras_chave' que você tem em alguma entrada do seu faq.json
+    # que leve à resposta sobre preços/promoções.
     "preco": [
         {"text": "Promoções atuais", "faq_id": "4"},       # FAQ ID para Preços e promoções
         {"text": "Preço do barril de 50L", "faq_id": "12"}, # EX: Supondo que FAQ ID "12" é para "Preço do Barril de 50L"
@@ -107,6 +114,7 @@ def find_faq_answer(message_text):
         best_match_keyword = ""
         best_match_entry_id = None
         
+        # Iterar sobre o FAQ para encontrar a melhor correspondência
         for entry_id, entry_data in faq_data.items():
             keywords = [kw.lower() for kw in entry_data.get('palavras_chave', [])]
             for keyword in keywords:
@@ -118,17 +126,22 @@ def find_faq_answer(message_text):
         
         if best_match_entry_id:
             found_answer = faq_data[best_match_entry_id].get('resposta')
+            # A palavra-chave que será usada para o RELATED_BUTTONS_MAP deve ser a que melhor correspondeu
             matched_keyword_for_buttons = best_match_keyword
 
 
-    # Se uma resposta específica foi encontrada no FAQ
+    # Se uma resposta principal foi encontrada no FAQ
     if found_answer:
         # Pega os botões relacionados usando a palavra-chave que disparou a resposta,
         # ou usa os botões padrão se não houver um mapeamento específico para essa palavra-chave.
+        # Se matched_keyword_for_buttons for None (ex: se não encontrou nenhuma keyword no else branch),
+        # get() retornará [] e o fallback será ativado.
         buttons_to_send = RELATED_BUTTONS_MAP.get(matched_keyword_for_buttons, [])
-        # Se não encontrou botões específicos para a palavra-chave, mas encontrou uma resposta,
-        # pode ser útil oferecer os botões padrão de "boas-vindas" como um fallback.
-        if not buttons_to_send: # Se a lista de botões estiver vazia
+        
+        # Se não encontrou botões específicos para a palavra-chave que ativou a resposta,
+        # usa os botões padrão de "boas_vindas_ou_nao_entendi" como um fallback.
+        # Isso garante que sempre haja opções, mesmo que o mapeamento para aquela palavra-chave específica esteja vazio ou ausente.
+        if not buttons_to_send and matched_keyword_for_buttons != "boas_vindas_ou_nao_entendi": 
             buttons_to_send = RELATED_BUTTONS_MAP.get("boas_vindas_ou_nao_entendi", [])
 
         return found_answer, buttons_to_send
