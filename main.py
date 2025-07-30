@@ -39,11 +39,17 @@ def load_faq():
 load_faq()
 
 # --- NOVO: Mapeamento de palavras-chave para botões relacionados ---
-# AJUSTE ESTE DICIONÁRIO COM OS IDs CORRETOS DO SEU FAQ.JSON!
-# 'text': é o texto que aparece no botão
-# 'faq_id': é o ID da pergunta no seu faq.json que será enviada quando o botão for clicado
+# ISTO É CRÍTICO! VOCÊ DEVE AJUSTAR ESTE DICIONÁRIO COM OS IDs E PALAVRAS-CHAVE REAIS DO SEU FAQ.JSON.
+# Cada CHAVE (ex: "boas_vindas_ou_nao_entendi", "chopp", "entrega") deve ser uma palavra-chave
+# ou identificador que você quer que dispare um conjunto ESPECÍFICO de botões.
+#
+# 'text': É o texto que APARECE no botão no Telegram.
+# 'faq_id': É o ID EXATO (como string) de uma entrada NO SEU FAQ.JSON que será usada
+#           para buscar a resposta quando esse botão for clicado.
 RELATED_BUTTONS_MAP = {
-    # Botões para quando o bot cumprimenta ou não entende (pode ser o mesmo conjunto)
+    # Cenário 1: Boas-vindas ou quando o bot não entende a pergunta.
+    # As palavras-chave "oi", "olá", "/start", etc., ou a ausência de correspondência,
+    # cairão aqui.
     "boas_vindas_ou_nao_entendi": [
         {"text": "Quantos litros de chope?", "faq_id": "2"},  # ID da pergunta sobre litros
         {"text": "Horários de entrega?", "faq_id": "3"},    # ID da pergunta sobre entrega
@@ -51,18 +57,28 @@ RELATED_BUTTONS_MAP = {
         {"text": "Lojas e regiões?", "faq_id": "6"},       # ID da pergunta sobre lojas
         {"text": "Como pedir?", "faq_id": "5"}             # ID da pergunta sobre como pedir
     ],
-    # Botões específicos para quando a palavra-chave "chopp" é encontrada
+    # Cenário 2: Quando a palavra-chave "chopp" é detectada na mensagem do usuário.
     "chopp": [
         {"text": "Quantos litros de chope?", "faq_id": "2"},
         {"text": "Promoções de chope?", "faq_id": "4"},
-        {"text": "Tipos de chope?", "faq_id": "7"},         # Exemplo: Adicione um FAQ ID para tipos de chope se tiver
+        {"text": "Tipos de chope?", "faq_id": "7"},         # EX: Supondo que FAQ ID "7" é sobre "Tipos de Chope"
         {"text": "Como pedir meu chope?", "faq_id": "5"}
     ],
-    # Adicione mais mapeamentos conforme necessário para outras palavras-chave
-    # "entrega": [
-    #    {"text": "Horário de entrega?", "faq_id": "3"},
-    #    {"text": "Regiões de atendimento?", "faq_id": "6"}
-    # ],
+    # --- VOCÊ DEVE ADICIONAR MAIS ENTRADAS AQUI PARA PERSONALIZAR OS BOTÕES ---
+    # EX: Cenário 3: Quando a palavra-chave "entrega" é detectada.
+    "entrega": [
+        {"text": "Verificar horários de entrega", "faq_id": "3"}, # FAQ ID para Horários de entrega
+        {"text": "Regiões atendidas", "faq_id": "6"},       # FAQ ID para Lojas e regiões
+        {"text": "Status do meu pedido", "faq_id": "11"}    # EX: Supondo que FAQ ID "11" é sobre "Status do Pedido"
+    ],
+    # EX: Cenário 4: Quando a palavra-chave "preço" é detectada.
+    "preco": [
+        {"text": "Promoções atuais", "faq_id": "4"},       # FAQ ID para Preços e promoções
+        {"text": "Preço do barril de 50L", "faq_id": "12"}, # EX: Supondo que FAQ ID "12" é para "Preço do Barril de 50L"
+        {"text": "Formas de pagamento", "faq_id": "10"}    # EX: Supondo que FAQ ID "10" é para "Formas de Pagamento"
+    ],
+    # ADICIONE MAIS CENÁRIOS CONFORME AS PALAVRAS-CHAVE DO SEU FAQ.JSON!
+    # Lembre-se de que cada `faq_id` precisa existir no seu `faq.json`.
 }
 
 
@@ -70,31 +86,31 @@ RELATED_BUTTONS_MAP = {
 def find_faq_answer(message_text):
     message_text_lower = message_text.lower()
     found_answer = None
-    matched_keyword = None # Para identificar qual palavra-chave disparou a correspondência
+    matched_keyword_for_buttons = None # Para identificar qual palavra-chave deve disparar qual conjunto de botões
 
-    # Primeiro, verifica se a mensagem é um comando de início ou uma saudação
+    # Primeiro, verifica se a mensagem é um comando de início ou uma saudação comum
     if message_text_lower == "/start" or any(kw in message_text_lower for kw in ["oi", "olá", "ola", "bom dia", "boa tarde", "boa noite"]):
         # Tenta encontrar a resposta de boas-vindas no FAQ (assumindo ID "1" para isso)
         if "1" in faq_data:
             found_answer = faq_data["1"].get('resposta')
-        matched_keyword = "boas_vindas_ou_nao_entendi" # Usa esta chave para buscar botões
+        matched_keyword_for_buttons = "boas_vindas_ou_nao_entendi" # Usa esta chave para buscar botões padrão
     else:
-        # Busca no FAQ por palavra-chave
+        # Busca no FAQ por palavra-chave para encontrar a resposta principal
         for entry_id, entry_data in faq_data.items():
             keywords = [kw.lower() for kw in entry_data.get('palavras_chave', [])]
             for keyword in keywords:
                 if keyword in message_text_lower:
                     found_answer = entry_data.get('resposta')
-                    matched_keyword = keyword # Usa a palavra-chave encontrada para buscar botões
-                    break
+                    matched_keyword_for_buttons = keyword # Usa a palavra-chave que encontrou para buscar botões específicos
+                    break # Sai do loop de palavras-chave se uma correspondência for encontrada
             if found_answer:
-                break
+                break # Sai do loop de entradas do FAQ se uma resposta for encontrada
 
     # Se uma resposta específica foi encontrada no FAQ
     if found_answer:
-        # Verifica se há botões relacionados para a palavra-chave que disparou a resposta
-        # Usa o 'matched_keyword' para buscar no RELATED_BUTTONS_MAP
-        buttons_to_send = RELATED_BUTTONS_MAP.get(matched_keyword, [])
+        # Pega os botões relacionados usando a palavra-chave que disparou a resposta,
+        # ou usa os botões padrão se não houver um mapeamento específico.
+        buttons_to_send = RELATED_BUTTONS_MAP.get(matched_keyword_for_buttons, [])
         return found_answer, buttons_to_send
     else:
         # Resposta padrão se nenhuma correspondência específica for encontrada
@@ -147,9 +163,14 @@ def webhook():
                         print(f"----> Mensagem enviada com sucesso para o chat {chat_id}.")
                     except telebot.apihelper.ApiTelegramException as e:
                         print(f"ERRO Telegram API ao enviar mensagem: {e}")
+                        # Isso pode acontecer se houver problemas de formatação Markdown ou outros
                         if "Can't parse message text" in str(e):
-                            print("DICA: Verifique se há caracteres Markdown não escapados na sua resposta.")
-                            bot.send_message(chat_id, response_text.replace("_", "\\_").replace("*", "\\*"), parse_mode=None) # Tenta enviar sem Markdown
+                            print("DICA: Verifique se há caracteres Markdown não escapados na sua resposta. Tentando enviar sem Markdown...")
+                            # Tenta enviar a mensagem sem Markdown se houver erro de parse
+                            bot.send_message(chat_id, response_text, parse_mode=None)
+                        else:
+                            # Para outros erros de API do Telegram, simplesmente imprime o erro
+                            pass # O erro já foi impresso acima
                     except Exception as e:
                         print(f"ERRO geral ao enviar mensagem: {e}")
                 else:
@@ -171,9 +192,8 @@ def webhook():
                     faq_entry = faq_data.get(callback_data) # faq_data tem chaves como strings agora
                     if faq_entry:
                         response_text = faq_entry.get('resposta', "Resposta não encontrada para este ID de FAQ.")
-                        # Quando responde a um clique de botão, geralmente não envia mais botões,
-                        # mas você pode chamar find_faq_answer novamente para botões aninhados se quiser.
-                        # Por simplicidade, envia apenas a resposta do FAQ clicado.
+                        # Ao clicar em um botão, geralmente não enviamos mais botões aqui,
+                        # mas você pode adicionar essa lógica se quiser "navegação" aninhada.
                         bot.send_message(chat_id, response_text, parse_mode='Markdown')
                         print(f"----> Resposta da Callback Query enviada com sucesso para o chat {chat_id}.")
                     else:
