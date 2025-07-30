@@ -11,7 +11,7 @@ app = Flask(__name__)
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 if not BOT_TOKEN:
     print("ERRO: Variável de ambiente BOT_TOKEN não definida.")
-    exit(1) # Sair se o token não estiver configurado
+    exit(1) # Sair se o token não estiver configurado, pois o bot não funcionará
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # --- Variável global para armazenar o FAQ ---
@@ -21,7 +21,7 @@ def load_faq():
     global faq_data
     try:
         with open('faq.json', 'r', encoding='utf-8') as f:
-            # Garante que as chaves do dicionário FAQ sejam strings
+            # Garante que as chaves do dicionário FAQ sejam strings para corresponder ao callback_data
             raw_faq = json.load(f)
             faq_data = {str(k): v for k, v in raw_faq.items()}
         print(f"FAQ carregado com sucesso! Tamanho do FAQ: {len(faq_data)} entradas.")
@@ -101,7 +101,7 @@ def webhook():
                 print(f"----> Mensagem recebida do chat {chat_id}: '{text}'")
 
                 response_text = ""
-                markup = None # Sem botões dinâmicos por padrão para manter "enxuto"
+                # O parâmetro reply_markup não será passado para não enviar botões.
 
                 if text:
                     # Tenta encontrar no FAQ
@@ -115,8 +115,8 @@ def webhook():
                         print(f"----> Nenhuma resposta encontrada no FAQ para: '{text}'. Enviando fallback genérico.")
 
                     try:
-                        # Tenta enviar como Markdown, mas com tratamento de erro
-                        bot.send_message(chat_id, response_text, reply_markup=markup, parse_mode='Markdown')
+                        # Envia a mensagem SEM o parâmetro reply_markup
+                        bot.send_message(chat_id, response_text, parse_mode='Markdown')
                         print(f"----> Mensagem enviada com sucesso para o chat {chat_id}.")
                     except telebot.apihelper.ApiTelegramException as e:
                         print(f"ERRO Telegram API ao enviar mensagem: {e}")
@@ -124,37 +124,22 @@ def webhook():
                             print("DICA: Texto pode ter Markdown inválido. Tentando enviar sem parse_mode...")
                             bot.send_message(chat_id, response_text, parse_mode=None)
                         else:
-                            # Re-raise other API exceptions if you want to handle them specifically
                             pass
                     except Exception as e:
                         print(f"ERRO geral ao enviar mensagem: {e}")
                 else:
                     print(f"----> Mensagem recebida sem texto (ex: foto, sticker). Ignorando por enquanto.")
 
-            elif update.callback_query:
-                # Esta seção é acionada por cliques em botões inline
-                callback_query = update.callback_query
-                chat_id = callback_query.message.chat.id
-                callback_data = callback_query.data
-
-                print(f"----> Callback Query recebida do chat {chat_id}: '{callback_data}'")
-                bot.answer_callback_query(callback_query.id) # Remove o "carregando" do botão
-
-                # Se o callback_data for um ID de FAQ, tentar responder com ele
-                if callback_data in faq_data:
-                    response_text = faq_data[callback_data].get('resposta')
-                    bot.send_message(chat_id, response_text, parse_mode='Markdown')
-                    print(f"----> Resposta da Callback Query enviada com sucesso para o chat {chat_id}.")
-                else:
-                    bot.send_message(chat_id, "Opção de botão não reconhecida ou FAQ não encontrado.", parse_mode='Markdown')
-                    print(f"----> ERRO: FAQ ID '{callback_data}' não encontrado para Callback Query.")
-                
+            # A seção 'elif update.callback_query:' foi REMOVIDA para não lidar com botões.
+            # Se você enviar botões por algum motivo, eles não serão processados por este bot.
+            
             else:
                 print("----> Update recebido sem as chaves 'message' ou 'callback_query'.")
 
+
         except Exception as e:
             print(f"ERRO INESPERADO no processamento do webhook: {e}")
-            print(traceback.format_exc()) # Imprime o stack trace completo do erro
+            print(traceback.format_exc())
 
         print("Update processado. Retornando 200 OK.")
         return 'OK', 200
