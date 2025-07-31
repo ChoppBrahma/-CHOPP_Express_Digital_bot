@@ -117,7 +117,9 @@
       "fechamento loja",
       "atendimento hoje",
       "funciona sábado",
-      "fechado domingo"
+      "fechado domingo",
+      "Horario de entrega",
+      "Quando entregam?"
     ]
   },
   "4": {
@@ -204,6 +206,7 @@
       "o que tem",
       "barril",
       "chope",
+      "cerveja",
       "itens disponíveis",
       "como escolher",
       "lista de produtos",
@@ -340,7 +343,17 @@
       "estoque loja",
       "região atendida",
       "disponível onde",
-      "variação de produtos"
+      "variação de produtos",
+      "Lojas e regiões de atendimento?",
+      "Vocês atendem na minha região?",
+      "Atendimento em [nome da cidade/bairro, ex: Taguatinga, Águas Claras, Gama]?",
+      "Quais regiões vocês entregam?",
+      "Entrega na minha cidade?",
+      "Atende em Taguatinga?",
+      "Falo da região de Taguatinga",
+      "Cobertura",
+      "Onde vocês atendem?",
+      "Disponibilidade por região"
     ]
   },
   "11": {
@@ -1758,6 +1771,19 @@
       "dados pagamento",
       "como cadastrar",
       "necessário pedido"
+    ]
+  },
+  "99": {
+    "id": 99,
+    "pergunta": "Estilo de Resposta do Bot",
+    "resposta": "Olá! Minhas respostas são sempre as mais completas possíveis para te ajudar a resolver sua dúvida. Se precisar de algo mais conciso ou específico, por favor, reformule sua pergunta!",
+    "palavras_chave": [
+      "Vc pode dizer só sim ou não?",
+      "Você responde sim ou não?",
+      "Suas respostas são curtas?",
+      "Qual o seu estilo de resposta?",
+      "Você é direto?",
+      "Como você responde?"
     ]
   }
 }
