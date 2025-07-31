@@ -1,8 +1,8 @@
 {
-  "1": {
+ "1": {
     "id": 1,
-    "pergunta": "Boas-vindas / Saudações iniciais",
-    "resposta": "Olá! Eu sou o assistente virtual da Chopp Brahma Express. Posso te ajudar com dúvidas sobre nossos produtos, serviços, entregas, promoções e muito mais!\n\nPara começar, você pode me perguntar sobre:\n🍻 Quantos litros de chope para meu evento?\n🚚 Horários de entrega e retirada?\n💰 Preços e promoções (Choppback)?\n📍 Lojas e regiões de atendimento?\n\nOu, se preferir, me diga sua dúvida específica!",
+    "pergunta": "Boas-vindas / Saudações Iniciais",
+    "resposta": "Olá! Eu sou o assistente virtual da Chopp Brahma Express. Posso te ajudar com dúvidas sobre nossos produtos, serviços, entregas, promoções e muito mais!\n\nPara que eu possa te ajudar, você pode:\n🍻 Perguntar: 'Quantos litros de chope para meu evento?'\n🚚 Perguntar: 'Horários de entrega e retirada?'\n💰 Perguntar: 'Quais os preços e promoções?'\n📍 Perguntar: 'Onde ficam as lojas e regiões de atendimento?'\n\nOu, se preferir, me diga sua dúvida específica! Se eu não conseguir entender, vou te oferecer outras opções de contato.",
     "palavras_chave": [
       "oi",
       "olá",
@@ -14,7 +14,7 @@
       "começar",
       "ajuda",
       "iniciar",
-      "presentação",
+      "apresentação",
       "saudação",
       "info",
       "informações",
@@ -25,15 +25,16 @@
       "virtual",
       "menu",
       "opções",
-      "duvida",
-      "question",
+      "dúvida",
       "início",
       "comece",
       "guia",
       "saudações",
       "apresentar",
       "quero começar",
-      "fazer pergunta"
+      "fazer pergunta",
+      "com quem falo",
+      "quem é você"
     ]
   },
   "2": {
@@ -1811,6 +1812,13 @@
       "Como você responde?"
     ]
   },
+  {
+  "2": {
+    "id": 2,
+    "pergunta": "Resposta de Dúvida Não Encontrada / Fallback",
+    "resposta": "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. 😔\n\nPor favor, tente perguntar de outra forma, use palavras-chave diferentes ou escolha um dos nossos temas:\n\n🍻 **Eventos e Quantidade** (ex: 'quantos litros para 30 pessoas?')\n🚚 **Entrega e Retirada** (ex: 'onde é a retirada?')\n💰 **Preços e Promoções** (ex: 'qual o preço do chopp?')\n\nSe ainda assim não encontrar o que precisa, clique no link abaixo para falar diretamente com nossa equipe:\n➡️ **Clique aqui para falar conosco no WhatsApp!**\nOu, se preferir, você pode nos ligar no (61) 3971-7502.\nEstamos prontos para te ajudar!",
+    "palavras_chave": []
+},
   "100": {
     "id": 100,
     "pergunta": "Como trocar o barril de chope?",
