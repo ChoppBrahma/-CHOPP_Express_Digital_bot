@@ -8,7 +8,15 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 # --- Importações NLTK e Scikit-learn ---
 import nltk
 # AQUI ESTÁ A NOVA LINHA DE AJUSTE PARA O NLTK DATA PATH
-nltk.data.path.append('/opt/render/nltk_data') # <--- LINHA ADICIONADA
+# Usamos os.path.join para construir um caminho absoluto robusto
+nltk_data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nltk_data')
+nltk.data.path.append(nltk_data_dir) # <--- LINHA AJUSTADA
+
+# Certifique-se de que o diretório existe (para desenvolvimento local, no Render o download criará)
+if not os.path.exists(nltk_data_dir):
+    os.makedirs(nltk_data_dir, exist_ok=True)
+    print(f"DEBUG: Criado diretório para NLTK_DATA em: {nltk_data_dir}") # Apenas para debug
+
 from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer # Para português
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -42,19 +50,21 @@ try:
     nltk.data.find('corpora/stopwords')
     print("Dados do NLTK: stopwords encontrados.")
 except LookupError:
-    print("ERRO: Stopwords do NLTK não encontradas após o build. Verifique o comando de build do Render.")
+    print("ERRO: Stopwords do NLTK não encontradas. Verifique o comando de build do Render e o NLTK_DATA path.")
     exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
 
 try:
     nltk.data.find('stemmers/rslp')
     print("Dados do NLTK: rslp (stemmer para português) encontrados.")
 except LookupError:
-    print("ERRO: Stemmer RSLP do NLTK não encontrado após o build. Verifique o comando de build do Render.")
+    print("ERRO: Stemmer RSLP do NLTK não encontrado. Verifique o comando de build do Render e o NLTK_DATA path.")
     exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
 
 
 stemmer = RSLPStemmer()
 stop_words = set(stopwords.words('portuguese'))
+
+# ... (restante do seu código, não alterado) ...
 
 # --- Função de Pré-processamento de Texto ---
 def preprocess_text(text):
