@@ -83,32 +83,24 @@
       "quantidade de cerveja"
     ]
   },
-  "3": {
+   "3": {
     "id": 3,
     "pergunta": "Qual é o horário de atendimento de vocês?",
     "resposta": "🕘 Segunda a sexta: das 09h às 18h\n🕗 Sábado: das 08h às 12h\n🚫 Domingo: fechado",
     "palavras_chave": [
       "horário de funcionamento",
-      "atendimento ao cliente",
-      "segunda a sábado",
       "horário comercial",
-      "loja aberta",
       "expediente",
-      "disponibilidade",
-      "atendimento presencial",
       "horário",
       "hora",
       "funcionamento",
       "abre",
       "fecha",
-      "atende",
       "que horas",
-      "expediente",
       "tá aberto",
       "horários de loja",
       "quando abre",
       "quando fecha",
-      "atendimento disponível",
       "dias de funcionamento",
       "loja funciona",
       "horário de trabalho",
@@ -117,9 +109,7 @@
       "fechamento loja",
       "atendimento hoje",
       "funciona sábado",
-      "fechado domingo",
-      "Horario de entrega",
-      "Quando entregam?"
+      "fechado domingo"
     ]
   },
   "4": {
@@ -1314,7 +1304,7 @@
       "choppback site"
     ]
   },
-  "44": {
+   "44": {
     "id": 44,
     "pergunta": "Vocês atendem na minha região?",
     "resposta": "📍 Atendemos sim! Nosso serviço cobre Brasília e diversas regiões próximas. Se você está em alguma dessas localidades, estamos prontos para entregar aí:\n- Água Quente\n- Águas Claras\n- Arniqueira\n- Brazlândia\n- Ceilândia\n- Gama\n- Guará\n- Núcleo Bandeirante\n- Park Way\n- Recanto das Emas\n- Riacho Fundo\n- Riacho Fundo II\n- Samambaia\n- Santa Maria\n- SCIA/Estrutural\n- SIA\n- Sol Nascente / Pôr do Sol\n- Taguatinga\n- Valparaíso de Goiás\n- Vicente Pires\n🎯 Basta informar o endereço completo no seu pedido e confirmaremos a entrega.",
@@ -1342,7 +1332,19 @@
       "entrega local",
       "áreas cobertas",
       "atendimento região",
-      "onde entregam"
+      "onde entregam",
+      "Guará",
+      "Brasília",
+      "DF",
+      "Águas Claras",
+      "Taguatinga",
+      "Ceilândia",
+      "Gama",
+      "Samambaia",
+      "Santa Maria",
+      "Valparaíso",
+      "vicente pires",
+      "brazlândia"
     ]
   },
   "45": {
@@ -1695,7 +1697,7 @@
       "coleta programada"
     ]
   },
-  "54": {
+ "54": {
     "id": 54,
     "pergunta": "Não encontrei minha dúvida. Como posso ser atendido?",
     "resposta": "Sentimos muito que você não tenha encontrado a resposta para sua dúvida em nosso FAQ. 😔\nPara um atendimento mais personalizado, por favor, clique no link abaixo para falar diretamente com nossa equipe via WhatsApp:\n📱 [**Clique aqui para falar conosco no WhatsApp!**](https://wa.me/556139717502)\nOu, se preferir, você pode nos ligar no **(61) 3971-7502**.\nEstamos prontos para te ajudar!",
@@ -1733,7 +1735,13 @@
       "falar equipe",
       "resposta personalizada",
       "ajuda urgente",
-      "contato telefone"
+      "contato telefone",
+      "não me atende",
+      "falar com suporte",
+      "falar com SAC",
+      "canal de atendimento",
+      "fale com um especialista",
+      "atendimento ao vivo"
     ]
   },
   "55": {
