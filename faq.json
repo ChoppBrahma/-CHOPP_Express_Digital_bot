@@ -1781,6 +1781,24 @@
       "necessário pedido"
     ]
   },
+  {
+  "56": {
+    "id": 56,
+    "pergunta": "Como pedir chopp Brahma Express?",
+    "resposta": "Para pedir Chopp Brahma Express, você pode:\n\n1.  **Acessar o site oficial** da Chopp Brahma Express.\n2.  **Digitar seu CEP** para verificar a disponibilidade e as opções de entrega na sua região.\n3.  **Escolher o tipo e a quantidade de chopp** desejados, além de acessórios se precisar.\n4.  **Selecionar a voltagem da chopeira** compatível com sua residência ou local do evento.\n5.  **Finalizar o pedido** preenchendo seus dados, escolhendo a data de entrega/retirada e a forma de pagamento.\n\nVocê também pode verificar se há um ponto de venda físico próximo a você para retirada.\n\n_Beba com moderação._",
+    "palavras_chave": [
+      "como pedir chopp",
+      "fazer pedido chopp",
+      "comprar chopp",
+      "pedido chopp brahma express",
+      "pedir chopp online",
+      "site chopp brahma",
+      "comprar chopp em casa",
+      "passos para pedir",
+      "processo de compra",
+      "onde pedir chopp"
+    ]
+  },
   "99": {
     "id": 99,
     "pergunta": "Estilo de Resposta do Bot",
