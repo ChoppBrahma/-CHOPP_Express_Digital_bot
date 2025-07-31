@@ -5,117 +5,207 @@ import telebot
 import traceback
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-app = Flask(__name__)
+# --- Importações NLTK e Scikit-learn ---
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import RSLPStemmer # Para português
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 # --- Configurações do Bot Telegram ---
+app = Flask(__name__)
+
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 if not BOT_TOKEN:
     print("ERRO: Variável de ambiente BOT_TOKEN não definida.")
     exit(1)
 bot = telebot.TeleBot(BOT_TOKEN)
 
-# --- Variável global para armazenar o FAQ ---
-faq_data = {}
+# Variável de ambiente para o ID do chat do administrador (para comandos de admin)
+ADMIN_CHAT_ID = os.environ.get('ADMIN_CHAT_ID')
+if not ADMIN_CHAT_ID:
+    print("AVISO: Variável de ambiente ADMIN_CHAT_ID não definida. Comando /recarregarfaq não funcionará para administradores.")
 
+# --- Variáveis globais para armazenar o FAQ e componentes de PLN ---
+faq_data = {}
+tfidf_vectorizer = None
+faq_vectors = None
+faq_ids_indexed = [] # Para mapear de volta do índice do vetorizador para o FAQ ID
+
+# --- Inicializar Stemmer e Stop Words ---
+try:
+    # Baixar os dados do NLTK (roda uma vez na primeira execução ou se não encontrar os dados)
+    nltk.data.find('corpora/stopwords')
+except nltk.downloader.DownloadError:
+    print("Baixando dados do NLTK: stopwords...")
+    nltk.download('stopwords')
+try:
+    nltk.data.find('stemmers/rslp')
+except nltk.downloader.DownloadError:
+    print("Baixando dados do NLTK: rslp (stemmer para português)...")
+    nltk.download('rslp')
+
+stemmer = RSLPStemmer()
+stop_words = set(stopwords.words('portuguese'))
+
+# --- Função de Pré-processamento de Texto ---
+def preprocess_text(text):
+    """
+    Normaliza o texto: minúsculas, remove stopwords e aplica stemming.
+    """
+    if not text:
+        return ""
+    text = str(text).lower().strip() # Garante que é string
+    words = [stemmer.stem(word) for word in text.split() if word not in stop_words and len(word) > 1] # Ignorar palavras de 1 letra
+    return " ".join(words)
+
+# --- Função para Carregar e Vetorizar o FAQ ---
 def load_faq():
-    global faq_data
+    global faq_data, tfidf_vectorizer, faq_vectors, faq_ids_indexed
     try:
         with open('faq.json', 'r', encoding='utf-8') as f:
             raw_faq = json.load(f)
             faq_data = {str(k): v for k, v in raw_faq.items()}
-        print(f"FAQ carregado com sucesso! Tamanho do FAQ: {len(faq_data)} entradas.")
+
+        if not faq_data:
+            print("FAQ vazio ou não carregado. Não é possível vetorizar.")
+            tfidf_vectorizer = None
+            faq_vectors = None
+            faq_ids_indexed = []
+            return
+
+        # Preparar textos para o vetorizador TF-IDF
+        texts_to_vectorize = []
+        faq_ids_indexed = []
+        for faq_id, entry in faq_data.items():
+            # Combine a pergunta e as palavras-chave para criar o "documento" do FAQ
+            # Adicione um espaço extra para garantir que as palavras não se unam se uma estiver vazia
+            combined_text = entry.get('pergunta', '') + " " + " ".join(entry.get('palavras_chave', []))
+            texts_to_vectorize.append(preprocess_text(combined_text))
+            faq_ids_indexed.append(faq_id)
+
+        # Inicializar e treinar o vetorizador TF-IDF
+        # fit_transform() treina o vocabulário e transforma os textos
+        tfidf_vectorizer = TfidfVectorizer()
+        faq_vectors = tfidf_vectorizer.fit_transform(texts_to_vectorize)
+        
+        print(f"FAQ carregado e vetorizado com sucesso! Tamanho do FAQ: {len(faq_data)} entradas.")
     except FileNotFoundError:
         print("Erro: Arquivo faq.json não encontrado. O bot NÃO poderá responder via FAQ.")
         faq_data = {}
+        tfidf_vectorizer = None
+        faq_vectors = None
+        faq_ids_indexed = []
     except json.JSONDecodeError as e:
         print(f"Erro ao decodificar JSON do faq.json: {e}. Verifique a sintaxe do arquivo.")
         faq_data = {}
+        tfidf_vectorizer = None
+        faq_vectors = None
+        faq_ids_indexed = []
+    except Exception as e:
+        print(f"Erro inesperado ao carregar ou vetorizar o FAQ: {e}")
+        traceback.print_exc()
+        faq_data = {}
+        tfidf_vectorizer = None
+        faq_vectors = None
+        faq_ids_indexed = []
 
 # Chama a função para carregar o FAQ quando o bot inicia
 load_faq()
 
-# --- Função para encontrar a melhor correspondência no FAQ (MAIS DIRETA) ---
+# --- NOVA Função para encontrar a melhor correspondência no FAQ (PLN AVANÇADO) ---
 def find_faq_answer(query):
-    if not faq_data:
-        print("DEBUG: FAQ data não carregado em find_faq_answer.")
+    """
+    Encontra a melhor resposta do FAQ usando TF-IDF e similaridade de cosseno.
+    Retorna a resposta do FAQ e o ID da pergunta correspondente.
+    """
+    if not faq_data or tfidf_vectorizer is None or faq_vectors is None:
+        print("DEBUG: Componentes PLN não carregados em find_faq_answer. Retornando None.")
         return None, None
 
-    normalized_query = query.lower().strip()
+    processed_query = preprocess_text(query)
+    if not processed_query: # Se a query for apenas stop words ou muito curta após pré-processamento
+        print("DEBUG: Query vazia após pré-processamento. Retornando None.")
+        return None, None
 
-    # Prioriza correspondência EXATA da pergunta do usuário com uma palavra-chave
-    for faq_id, entry in faq_data.items():
-        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
-        for keyword in keywords:
-            if normalized_query == keyword:
-                print(f"DEBUG: Correspondência EXATA de query com keyword! FAQ ID: {faq_id}, Keyword: '{keyword}'")
-                return entry.get('resposta'), faq_id
+    try:
+        # Transforma a query do usuário em um vetor TF-IDF usando o vocabulário aprendido
+        query_vector = tfidf_vectorizer.transform([processed_query])
+    except ValueError as e:
+        # Isso pode acontecer se a query tiver palavras que não estão no vocabulário do TF-IDF
+        print(f"DEBUG: Erro ao transformar query: {e}. Provavelmente query sem vocabulário conhecido.")
+        return None, None
+            
+    # Calcula a similaridade de cosseno entre a query e todos os itens do FAQ
+    similarities = cosine_similarity(query_vector, faq_vectors).flatten()
+
+    # Encontra o item do FAQ com a maior similaridade
+    best_match_index = similarities.argmax()
+    best_similarity = similarities[best_match_index]
+
+    # Define um limiar de similaridade. AJUSTE ESTE VALOR CONFORME TESTES!
+    # Um valor entre 0.35 e 0.50 é um bom ponto de partida para similaridade de cosseno com TF-IDF.
+    MIN_SIMILARITY_THRESHOLD = 0.35 
+
+    print(f"DEBUG: Melhor similaridade encontrada: {best_similarity:.4f}")
+
+    if best_similarity >= MIN_SIMILARITY_THRESHOLD:
+        best_faq_id = faq_ids_indexed[best_match_index]
+        print(f"DEBUG: Correspondência encontrada com similaridade {best_similarity:.4f} para ID: {best_faq_id}")
+        return faq_data[best_faq_id].get('resposta'), best_faq_id
     
-    # Se não houver correspondência exata, busca por uma palavra-chave CONTIDA na pergunta
-    best_faq_id_by_keyword_hits = None
-    max_keyword_hits = 0
-    
-    MIN_HITS_THRESHOLD = 1 
-
-    for faq_id, entry in faq_data.items():
-        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
-        current_hits = 0
-        
-        for keyword in keywords:
-            if keyword in normalized_query or normalized_query in keyword:
-                current_hits += 1
-        
-        pergunta_faq_normalizada = entry.get('pergunta', '').lower().strip()
-        if pergunta_faq_normalizada and pergunta_faq_normalizada in normalized_query:
-            current_hits += 1 
-
-        if current_hits > max_keyword_hits:
-            max_keyword_hits = current_hits
-            best_faq_id_by_keyword_hits = faq_id
-
-    print(f"DEBUG: Melhor correspondência por hits: ID {best_faq_id_by_keyword_hits} com {max_keyword_hits} hits.")
-
-    if max_keyword_hits >= MIN_HITS_THRESHOLD and best_faq_id_by_keyword_hits:
-        return faq_data[best_faq_id_by_keyword_hits].get('resposta'), best_faq_id_by_keyword_hits
-    
-    print("DEBUG: Nenhuma correspondência boa encontrada por hits de palavras-chave.")
+    print(f"DEBUG: Nenhuma correspondência boa encontrada (similaridade {best_similarity:.4f} abaixo do limiar {MIN_SIMILARITY_THRESHOLD}).")
     return None, None
 
-
-# --- Função para encontrar e gerar botões de perguntas relacionadas (AGORA COM MAIS BOTÕES) ---
-# Aumentei o max_buttons para 5. Você pode ajustar esse valor se precisar de mais.
-def get_related_buttons(query, primary_faq_id=None, max_buttons=10): # <<< AQUI A MUDANÇA
-    related_buttons = []
-    normalized_query = query.lower().strip()
+# --- Função para encontrar e gerar botões de perguntas relacionadas ---
+def get_related_buttons(query, primary_faq_id=None, max_buttons=5):
+    """
+    Gera botões para perguntas relacionadas, evitando a pergunta principal.
+    A lógica de busca de relacionados ainda pode ser aprimorada com PLN mais avançado no futuro.
+    """
+    related_buttons_info = [] # Lista de tuplas (faq_id, pergunta_texto)
     
-    RELATED_HITS_THRESHOLD = 1 
+    # Pré-processa a query para usar na busca de relacionados, tornando-a mais robusta
+    processed_query_for_related = preprocess_text(query)
+    query_words = processed_query_for_related.split()
+
+    # Um limiar simples para considerar uma pergunta relacionada
+    # Pode ser ajustado ou substituído por similaridade de cosseno no futuro
+    RELATED_KEYWORD_MATCH_THRESHOLD = 1 
 
     print(f"DEBUG: Buscando botões relacionados para query '{query}', excluindo ID '{primary_faq_id}'.")
 
     for faq_id, entry in faq_data.items():
         if faq_id == primary_faq_id: 
-            continue
+            continue # Não adicionar a própria pergunta que já foi a resposta principal
 
-        keywords = [k.lower().strip() for k in entry.get('palavras_chave', [])]
-        pergunta_text = entry.get('pergunta', '').lower().strip()
+        # Combine o texto da pergunta e as palavras-chave da entrada do FAQ
+        # e pré-processe para comparação
+        entry_text = entry.get('pergunta', '') + " " + " ".join(entry.get('palavras_chave', []))
+        processed_entry_text = preprocess_text(entry_text)
+        entry_words = processed_entry_text.split()
 
         current_related_hits = 0
-        for keyword in keywords + [pergunta_text]:
-            if not keyword: continue
-            if keyword in normalized_query or normalized_query in keyword:
+        for q_word in query_words:
+            if q_word in entry_words:
                 current_related_hits += 1
         
-        if current_related_hits >= RELATED_HITS_THRESHOLD:
-            if (faq_id, entry.get('pergunta')) not in related_buttons:
-                related_buttons.append((faq_id, entry.get('pergunta')))
+        # Considera a pergunta relacionada se houver um número mínimo de correspondências de palavras
+        if current_related_hits >= RELATED_KEYWORD_MATCH_THRESHOLD:
+            # Evita duplicatas adicionando apenas se a combinação (id, pergunta) não estiver na lista
+            if (faq_id, entry.get('pergunta')) not in related_buttons_info:
+                related_buttons_info.append((faq_id, entry.get('pergunta')))
         
-        if len(related_buttons) >= max_buttons: 
-            break
+        if len(related_buttons_info) >= max_buttons: 
+            break # Limita o número de botões
 
-    if related_buttons:
+    if related_buttons_info:
         markup = InlineKeyboardMarkup()
-        for faq_id, pergunta in related_buttons:
-            markup.add(InlineKeyboardButton(pergunta, callback_data=str(faq_id))) 
-        print(f"DEBUG: Botões relacionados gerados: {len(related_buttons)}.")
+        for faq_id, pergunta in related_buttons_info:
+            # Truncar perguntas longas para caber no botão
+            button_text = pergunta[:50] + '...' if len(pergunta) > 53 else pergunta
+            markup.add(InlineKeyboardButton(button_text, callback_data=str(faq_id))) 
+        print(f"DEBUG: Botões relacionados gerados: {len(related_buttons_info)}.")
         return markup
     print("DEBUG: Nenhum botão relacionado encontrado.")
     return None 
@@ -141,11 +231,26 @@ def webhook():
 
                 print(f"----> Mensagem recebida do chat {chat_id}: '{text}'")
 
+                # --- NOVO: Tratamento do comando de recarregar FAQ ---
+                if text == '/recarregarfaq':
+                    if ADMIN_CHAT_ID and str(chat_id) == ADMIN_CHAT_ID:
+                        bot.send_message(chat_id, "Iniciando recarregamento do FAQ. Isso pode levar alguns segundos...")
+                        load_faq() # Chama a função que já temos para recarregar e vetorizar
+                        if faq_data:
+                            bot.send_message(chat_id, f"FAQ recarregado com sucesso! {len(faq_data)} entradas.")
+                        else:
+                            bot.send_message(chat_id, "Erro ao recarregar FAQ. Verifique os logs do servidor.")
+                        return 'OK', 200 # Encerra o processamento do update para este comando
+                    else:
+                        bot.send_message(chat_id, "Você não tem permissão para usar este comando.")
+                        return 'OK', 200 # Encerra o processamento do update
+                # --- Fim do novo tratamento de comando ---
+
                 response_text = ""
                 markup = None 
 
                 if text:
-                    faq_answer, faq_id_matched = find_faq_answer(text)
+                    faq_answer, faq_id_matched = find_faq_answer(text) # Agora usa a nova função de PLN
 
                     if faq_answer:
                         response_text = faq_answer
@@ -153,19 +258,20 @@ def webhook():
                         markup = get_related_buttons(text, faq_id_matched)
                         
                     else:
-                        response_text = "Desculpe, não consegui encontrar uma resposta para sua pergunta no meu FAQ. Por favor, tente perguntar de outra forma ou consulte nosso site oficial."
+                        response_text = "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. Por favor, tente perguntar de outra forma ou consulte nosso site oficial."
                         print(f"----> Nenhuma resposta principal encontrada no FAQ para: '{text}'. Enviando fallback genérico.")
                     
                     try:
+                        # Considerar usar parse_mode='HTML' se tiver formatações mais complexas no FAQ
                         bot.send_message(chat_id, response_text, reply_markup=markup, parse_mode='Markdown')
                         print(f"----> Mensagem enviada com sucesso para o chat {chat_id}.")
                     except telebot.apihelper.ApiTelegramException as e:
                         print(f"ERRO Telegram API ao enviar mensagem: {e}")
-                        if "Can't parse message text" in str(e):
+                        if "Can't parse message text" in str(e) or "Bad Request: can't parse entities" in str(e):
                             print("DICA: Texto pode ter Markdown inválido. Tentando enviar sem parse_mode...")
                             bot.send_message(chat_id, response_text, parse_mode=None, reply_markup=markup) 
                         else:
-                            pass
+                            pass # Re-raise se for outro tipo de erro que não seja de parsing
                     except Exception as e:
                         print(f"ERRO geral ao enviar mensagem: {e}")
                 else:
@@ -177,7 +283,7 @@ def webhook():
                 callback_data = callback_query.data 
 
                 print(f"----> Callback Query recebida do chat {chat_id}: '{callback_data}'")
-                bot.answer_callback_query(callback_query.id) 
+                bot.answer_callback_query(callback_query.id) # Avisa o Telegram que a query foi recebida
 
                 try:
                     if callback_data in faq_data:
