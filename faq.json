@@ -1799,8 +1799,8 @@
       "onde pedir chopp"
     ]
   },
-  "99": {
-    "id": 99,
+  "57": {
+    "id": 57,
     "pergunta": "Estilo de Resposta do Bot",
     "resposta": "Olá! Minhas respostas são sempre as mais completas possíveis para te ajudar a resolver sua dúvida. Se precisar de algo mais conciso ou específico, por favor, reformule sua pergunta!",
     "palavras_chave": [
@@ -1813,8 +1813,8 @@
     ]
   },
   {
-  "2": {
-    "id": 2,
+  "58": {
+    "id": 58,
     "pergunta": "Resposta de Dúvida Não Encontrada / Fallback",
     "resposta": "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. 😔\n\nPor favor, tente perguntar de outra forma, use palavras-chave diferentes ou escolha um dos nossos temas:\n\n🍻 **Eventos e Quantidade** (ex: 'quantos litros para 30 pessoas?')\n🚚 **Entrega e Retirada** (ex: 'onde é a retirada?')\n💰 **Preços e Promoções** (ex: 'qual o preço do chopp?')\n\nSe ainda assim não encontrar o que precisa, clique no link abaixo para falar diretamente com nossa equipe:\n➡️ **Clique aqui para falar conosco no WhatsApp!**\nOu, se preferir, você pode nos ligar no (61) 3971-7502.\nEstamos prontos para te ajudar!",
     "palavras_chave": []
