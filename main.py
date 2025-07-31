@@ -41,30 +41,25 @@ faq_data = {}
 tfidf_vectorizer = None
 faq_vectors = None
 faq_ids_indexed = [] # Para mapear de volta do índice do vetorizador para o FAQ ID
+WELCOME_KEYWORDS = set() # NOVO: Para palavras-chave de boas-vindas
 
 # --- Inicializar Stemmer e Stop Words ---
-# REMOVEMOS os blocos try/except nltk.downloader.DownloadError
-# pois o download já é garantido no Build Command do Render.
-# Se o recurso não for encontrado aqui, é um problema de ambiente no Render.
 try:
     nltk.data.find('corpora/stopwords')
     print("Dados do NLTK: stopwords encontrados.")
 except LookupError:
     print("ERRO: Stopwords do NLTK não encontradas. Verifique o comando de build do Render e o NLTK_DATA path.")
-    exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
+    exit(1)
 
 try:
     nltk.data.find('stemmers/rslp')
     print("Dados do NLTK: rslp (stemmer para português) encontrados.")
 except LookupError:
     print("ERRO: Stemmer RSLP do NLTK não encontrado. Verifique o comando de build do Render e o NLTK_DATA path.")
-    exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
-
+    exit(1)
 
 stemmer = RSLPStemmer()
 stop_words = set(stopwords.words('portuguese'))
-
-# ... (restante do seu código, não alterado) ...
 
 # --- Função de Pré-processamento de Texto ---
 def preprocess_text(text):
@@ -73,13 +68,13 @@ def preprocess_text(text):
     """
     if not text:
         return ""
-    text = str(text).lower().strip() # Garante que é string
-    words = [stemmer.stem(word) for word in text.split() if word not in stop_words and len(word) > 1] # Ignorar palavras de 1 letra
+    text = str(text).lower().strip()
+    words = [stemmer.stem(word) for word in text.split() if word not in stop_words and len(word) > 1]
     return " ".join(words)
 
 # --- Função para Carregar e Vetorizar o FAQ ---
 def load_faq():
-    global faq_data, tfidf_vectorizer, faq_vectors, faq_ids_indexed
+    global faq_data, tfidf_vectorizer, faq_vectors, faq_ids_indexed, WELCOME_KEYWORDS
     try:
         with open('faq.json', 'r', encoding='utf-8') as f:
             raw_faq = json.load(f)
@@ -90,36 +85,42 @@ def load_faq():
             tfidf_vectorizer = None
             faq_vectors = None
             faq_ids_indexed = []
+            WELCOME_KEYWORDS = set()
             return
 
-        # Preparar textos para o vetorizador TF-IDF
         texts_to_vectorize = []
         faq_ids_indexed = []
         for faq_id, entry in faq_data.items():
             # Combine a pergunta e as palavras-chave para criar o "documento" do FAQ
-            # Adicione um espaço extra para garantir que as palavras não se unam se uma estiver vazia
             combined_text = entry.get('pergunta', '') + " " + " ".join(entry.get('palavras_chave', []))
             texts_to_vectorize.append(preprocess_text(combined_text))
             faq_ids_indexed.append(faq_id)
 
-        # Inicializar e treinar o vetorizador TF-IDF
-        # fit_transform() treina o vocabulário e transforma os textos
         tfidf_vectorizer = TfidfVectorizer()
         faq_vectors = tfidf_vectorizer.fit_transform(texts_to_vectorize)
         
+        # NOVO: Carregar palavras-chave de boas-vindas para tratamento isolado
+        WELCOME_KEYWORDS = set()
+        if '1' in faq_data: # Verifica se o FAQ ID '1' (boas-vindas) existe
+            for kw in faq_data['1'].get('palavras_chave', []):
+                WELCOME_KEYWORDS.add(kw.lower()) # Adiciona em minúsculas para comparação direta
         print(f"FAQ carregado e vetorizado com sucesso! Tamanho do FAQ: {len(faq_data)} entradas.")
+        print(f"Palavras-chave de boas-vindas carregadas: {WELCOME_KEYWORDS}")
+
     except FileNotFoundError:
         print("Erro: Arquivo faq.json não encontrado. O bot NÃO poderá responder via FAQ.")
         faq_data = {}
         tfidf_vectorizer = None
         faq_vectors = None
         faq_ids_indexed = []
+        WELCOME_KEYWORDS = set()
     except json.JSONDecodeError as e:
         print(f"Erro ao decodificar JSON do faq.json: {e}. Verifique a sintaxe do arquivo.")
         faq_data = {}
         tfidf_vectorizer = None
         faq_vectors = None
         faq_ids_indexed = []
+        WELCOME_KEYWORDS = set()
     except Exception as e:
         print(f"Erro inesperado ao carregar ou vetorizar o FAQ: {e}")
         traceback.print_exc()
@@ -127,11 +128,12 @@ def load_faq():
         tfidf_vectorizer = None
         faq_vectors = None
         faq_ids_indexed = []
+        WELCOME_KEYWORDS = set()
 
 # Chama a função para carregar o FAQ quando o bot inicia
 load_faq()
 
-# --- NOVA Função para encontrar a melhor correspondência no FAQ (PLN AVANÇADO) ---
+# --- Função para encontrar a melhor correspondência no FAQ (PLN AVANÇADO) ---
 def find_faq_answer(query):
     """
     Encontra a melhor resposta do FAQ usando TF-IDF e similaridade de cosseno.
@@ -142,27 +144,21 @@ def find_faq_answer(query):
         return None, None
 
     processed_query = preprocess_text(query)
-    if not processed_query: # Se a query for apenas stop words ou muito curta após pré-processamento
+    if not processed_query:
         print("DEBUG: Query vazia após pré-processamento. Retornando None.")
         return None, None
 
     try:
-        # Transforma a query do usuário em um vetor TF-IDF usando o vocabulário aprendido
         query_vector = tfidf_vectorizer.transform([processed_query])
     except ValueError as e:
-        # Isso pode acontecer se a query tiver palavras que não estão no vocabulário do TF-IDF
         print(f"DEBUG: Erro ao transformar query: {e}. Provavelmente query sem vocabulário conhecido.")
         return None, None
             
-    # Calcula a similaridade de cosseno entre a query e todos os itens do FAQ
     similarities = cosine_similarity(query_vector, faq_vectors).flatten()
 
-    # Encontra o item do FAQ com a maior similaridade
     best_match_index = similarities.argmax()
     best_similarity = similarities[best_match_index]
 
-    # Define um limiar de similaridade. AJUSTE ESTE VALOR CONFORME TESTES!
-    # Um valor entre 0.35 e 0.50 é um bom ponto de partida para similaridade de cosseno com TF-IDF.
     MIN_SIMILARITY_THRESHOLD = 0.35 
 
     print(f"DEBUG: Melhor similaridade encontrada: {best_similarity:.4f}")
@@ -179,26 +175,20 @@ def find_faq_answer(query):
 def get_related_buttons(query, primary_faq_id=None, max_buttons=5):
     """
     Gera botões para perguntas relacionadas, evitando a pergunta principal.
-    A lógica de busca de relacionados ainda pode ser aprimorada com PLN mais avançado no futuro.
     """
-    related_buttons_info = [] # Lista de tuplas (faq_id, pergunta_texto)
+    related_buttons_info = []
     
-    # Pré-processa a query para usar na busca de relacionados, tornando-a mais robusta
     processed_query_for_related = preprocess_text(query)
     query_words = processed_query_for_related.split()
 
-    # Um limiar simples para considerar uma pergunta relacionada
-    # Pode ser ajustado ou substituído por similaridade de cosseno no futuro
     RELATED_KEYWORD_MATCH_THRESHOLD = 1 
 
     print(f"DEBUG: Buscando botões relacionados para query '{query}', excluindo ID '{primary_faq_id}'.")
 
     for faq_id, entry in faq_data.items():
         if faq_id == primary_faq_id: 
-            continue # Não adicionar a própria pergunta que já foi a resposta principal
+            continue
 
-        # Combine o texto da pergunta e as palavras-chave da entrada do FAQ
-        # e pré-processe para comparação
         entry_text = entry.get('pergunta', '') + " " + " ".join(entry.get('palavras_chave', []))
         processed_entry_text = preprocess_text(entry_text)
         entry_words = processed_entry_text.split()
@@ -208,19 +198,16 @@ def get_related_buttons(query, primary_faq_id=None, max_buttons=5):
             if q_word in entry_words:
                 current_related_hits += 1
         
-        # Considera a pergunta relacionada se houver um número mínimo de correspondências de palavras
         if current_related_hits >= RELATED_KEYWORD_MATCH_THRESHOLD:
-            # Evita duplicatas adicionando apenas se a combinação (id, pergunta) não estiver na lista
             if (faq_id, entry.get('pergunta')) not in related_buttons_info:
                 related_buttons_info.append((faq_id, entry.get('pergunta')))
         
         if len(related_buttons_info) >= max_buttons: 
-            break # Limita o número de botões
+            break
 
     if related_buttons_info:
         markup = InlineKeyboardMarkup()
         for faq_id, pergunta in related_buttons_info:
-            # Truncar perguntas longas para caber no botão
             button_text = pergunta[:50] + '...' if len(pergunta) > 53 else pergunta
             markup.add(InlineKeyboardButton(button_text, callback_data=str(faq_id))) 
         print(f"DEBUG: Botões relacionados gerados: {len(related_buttons_info)}.")
@@ -249,38 +236,53 @@ def webhook():
 
                 print(f"----> Mensagem recebida do chat {chat_id}: '{text}'")
 
-                # --- NOVO: Tratamento do comando de recarregar FAQ ---
+                # --- Tratamento do comando de recarregar FAQ ---
                 if text == '/recarregarfaq':
                     if ADMIN_CHAT_ID and str(chat_id) == ADMIN_CHAT_ID:
                         bot.send_message(chat_id, "Iniciando recarregamento do FAQ. Isso pode levar alguns segundos...")
-                        load_faq() # Chama a função que já temos para recarregar e vetorizar
+                        load_faq()
                         if faq_data:
                             bot.send_message(chat_id, f"FAQ recarregado com sucesso! {len(faq_data)} entradas.")
                         else:
                             bot.send_message(chat_id, "Erro ao recarregar FAQ. Verifique os logs do servidor.")
-                        return 'OK', 200 # Encerra o processamento do update para este comando
+                        return 'OK', 200
                     else:
                         bot.send_message(chat_id, "Você não tem permissão para usar este comando.")
-                        return 'OK', 200 # Encerra o processamento do update
-                # --- Fim do novo tratamento de comando ---
+                        return 'OK', 200
 
                 response_text = ""
                 markup = None 
 
                 if text:
-                    faq_answer, faq_id_matched = find_faq_answer(text) # Agora usa a nova função de PLN
-
-                    if faq_answer:
-                        response_text = faq_answer
-                        print(f"----> Resposta principal encontrada no FAQ (ID: {faq_id_matched}): '{response_text}'")
-                        markup = get_related_buttons(text, faq_id_matched)
-                        
+                    # --- PONTO CHAVE 1: Tratamento especial e isolado para mensagens de boas-vindas (ID 1) ---
+                    # Verifica se o texto (em minúsculas) corresponde a uma das palavras-chave de boas-vindas
+                    # Este é o "pulo do gato" para garantir que saudações sejam respondidas corretamente.
+                    if text.lower() in WELCOME_KEYWORDS and '1' in faq_data:
+                        response_text = faq_data['1']['resposta']
+                        print(f"----> Resposta de Boas-vindas (ID 1) acionada diretamente para: '{text}'")
+                    # --- Fim do tratamento especial para ID 1 ---
                     else:
-                        response_text = "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. Por favor, tente perguntar de outra forma ou consulte nosso site oficial."
-                        print(f"----> Nenhuma resposta principal encontrada no FAQ para: '{text}'. Enviando fallback genérico.")
+                        # Processamento normal do FAQ para outras perguntas via PLN
+                        faq_answer, faq_id_matched = find_faq_answer(text)
+
+                        if faq_answer:
+                            response_text = faq_answer
+                            print(f"----> Resposta principal encontrada no FAQ (ID: {faq_id_matched}): '{response_text}'")
+                            markup = get_related_buttons(text, faq_id_matched)
+                            
+                        else:
+                            # --- PONTO CHAVE 2: Tratamento especial e isolado para respostas não encontradas (ID 2) ---
+                            # Este é o fallback que entra em ação quando o bot não encontra nenhuma outra correspondência.
+                            if '2' in faq_data:
+                                response_text = faq_data['2']['resposta']
+                                print(f"----> Nenhuma resposta principal encontrada. Usando Fallback ID 2 para: '{text}'.")
+                            else:
+                                # Fallback genérico padrão se o ID 2 não estiver presente no faq.json
+                                response_text = "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. Por favor, tente perguntar de outra forma ou consulte nosso site oficial."
+                                print(f"----> Nenhuma resposta principal encontrada e ID 2 ausente. Enviando fallback genérico padrão para: '{text}'.")
+                    # --- Fim do tratamento especial para ID 2 ---
                     
                     try:
-                        # Considerar usar parse_mode='HTML' se tiver formatações mais complexas no FAQ
                         bot.send_message(chat_id, response_text, reply_markup=markup, parse_mode='Markdown')
                         print(f"----> Mensagem enviada com sucesso para o chat {chat_id}.")
                     except telebot.apihelper.ApiTelegramException as e:
@@ -289,7 +291,7 @@ def webhook():
                             print("DICA: Texto pode ter Markdown inválido. Tentando enviar sem parse_mode...")
                             bot.send_message(chat_id, response_text, parse_mode=None, reply_markup=markup) 
                         else:
-                            pass # Re-raise se for outro tipo de erro que não seja de parsing
+                            pass
                     except Exception as e:
                         print(f"ERRO geral ao enviar mensagem: {e}")
                 else:
@@ -301,7 +303,7 @@ def webhook():
                 callback_data = callback_query.data 
 
                 print(f"----> Callback Query recebida do chat {chat_id}: '{callback_data}'")
-                bot.answer_callback_query(callback_query.id) # Avisa o Telegram que a query foi recebida
+                bot.answer_callback_query(callback_query.id)
 
                 try:
                     if callback_data in faq_data:
