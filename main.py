@@ -7,8 +7,8 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # --- Importações NLTK e Scikit-learn ---
 import nltk
-# O download das stopwords e do rslp será feito no Render Build Command.
-# Apenas a importação das classes é necessária aqui.
+# AQUI ESTÁ A NOVA LINHA DE AJUSTE PARA O NLTK DATA PATH
+nltk.data.path.append('/opt/render/nltk_data') # <--- LINHA ADICIONADA
 from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer # Para português
 from sklearn.feature_extraction.text import TfidfVectorizer
