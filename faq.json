@@ -1793,5 +1793,178 @@
       "Você é direto?",
       "Como você responde?"
     ]
+  },
+  {
+  "100": {
+    "id": 100,
+    "pergunta": "Como trocar o barril de chope?",
+    [cite_start]"resposta": "Para trocar o barril, não é necessário desmontar todo o sistema. Basta apertar o gatilho da válvula extratora, a que está conectada ao barril. Levantar e girar no sentido anti-horário. Não precisa fechar o cilindro de serraduras. Em seguida, rompa o lacre do próximo barril. Conecte corretamente a válvula extratora no encaixe. Gire no sentido horário. Aperte o gatilho e abaixe. Pronto! Viu como é fácil? Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 62, 63, 64, 65, 66]",
+    "palavras_chave": [
+      "trocar barril",
+      "barril",
+      "substituir barril",
+      "troca de barril",
+      "novo barril",
+      "engate",
+      "válvula extratora",
+      "barril de chope",
+      "troca"
+    ]
+  },
+  "101": {
+    "id": 101,
+    "pergunta": "O chopp não está gelando. O que fazer?",
+    "resposta": "Verifique se a chopeira está ligada corretamente na tomada. Se a resposta for sim, verifique se a chopeira está armando e desarmando. Ela faz um barulho quando isso acontece. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 67, 68, 69, 70]",
+    "palavras_chave": [
+      "chopp não gela",
+      "chopeira não gela",
+      "não está gelando",
+      "chopeira",
+      "gelar",
+      "temperatura",
+      "tomada",
+      "armando",
+      "desarmando",
+      "chopp quente"
+    ]
+  },
+  "102": {
+    "id": 102,
+    "pergunta": "Está vazando gás pelo cilindro. Como ajustar o regulador de pressão?",
+    "resposta": "Verifique se a mangueira está devidamente travada no engate rápido do cilindro. Os reguladores têm rosca ou parafusos para a regulagem. Verifique se eles indicam a pressão de 2,5 kgf por cm². Você também pode realizar alguns testes para conferir se realmente há vazamento ou se ainda há vazamento. Um deles é o teste da espuma, que pode ser realizado apenas com detergente e uma esponja. Fique de olho nas bolhas. Se estiver borbulhando, o vazamento ainda está acontecendo. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 71, 72, 73, 74, 75, 76, 77]",
+    "palavras_chave": [
+      "vazando gás",
+      "cilindro de gás",
+      "regulador de pressão",
+      "ajustar regulador",
+      "vazamento de gás",
+      "teste da espuma",
+      "bolhas",
+      "CO2",
+      "pressão do gás",
+      "gás acabando"
+    ]
+  },
+  "103": {
+    "id": 103,
+    "pergunta": "Está saindo somente espuma da chopeira. O que fazer?",
+    "resposta": "Verifique se a válvula da torneira está na posição de aproximadamente 45 graus. Verifique também o sentido que você está manuseando a torneira. Puxando para frente, você tira o chope. Para trás, o nosso famoso colarinho. Cheio de bramosidade. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 78, 79, 80, 81, 82]",
+    "palavras_chave": [
+      "saindo espuma",
+      "só espuma",
+      "muita espuma",
+      "chopeira espuma",
+      "torneira",
+      "colarinho",
+      "válvula",
+      "manusear torneira",
+      "chopp com espuma"
+    ]
+  },
+  "104": {
+    "id": 104,
+    "pergunta": "Como instalar corretamente a chopeira (modelo normal)?",
+    "resposta": "Faça o engate da válvula de extração no barril. Engate a mangueira no cilindro de CO2 até sentir que a mangueira travou no engate rápido. Abra o cilindro na posição anti-horária. Não é necessário abrir até o final. Aperte o gatilho e abaixe a válvula extratora. Caso haja vazamento na mangueira por onde passa o chope, encaixe a mangueira até travar no engate. E faça a sangria até o chope começar a sair. Tudo certo? Agora verifique a voltagem e ligue o equipamento na tomada. Espere de 3 a 5 minutos para que ocorra o resfriamento do seu chope. Levante a válvula de vazão que está na torneira em 45 graus ou até que fique com o fluxo ideal para consumo. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 83, 84, 85, 86, 87, 88, 89, 90, 91]",
+    "palavras_chave": [
+      "instalar chopeira",
+      "montar chopeira",
+      "instalação",
+      "modelo normal",
+      "engate",
+      "cilindro CO2",
+      "sangria",
+      "voltagem",
+      "ligar chopeira",
+      "resfriamento",
+      "válvula de vazão",
+      "tirar chope",
+      "montagem chopeira"
+    ]
+  },
+  "105": {
+    "id": 105,
+    "pergunta": "Como tirar o chope perfeito?",
+    "resposta": "Mantenha o copo num ângulo inclinado de aproximadamente 45 graus, acionando a torneira para frente. Conforme o copo for enchendo, volte lentamente à posição vertical. E quando estiver quase completo, acione a torneira para trás, liberando o colarinho e enchendo sua caldereta com a nossa bramosidade. O colarinho perfeito fica na altura de dois dedos, ideal para preservar a temperatura do seu chope brahma. [cite_start]Brinde muito e aproveite! [cite: 92, 93, 94, 95, 96, 97]",
+    "palavras_chave": [
+      "chopp perfeito",
+      "tirar chopp",
+      "colarinho",
+      "copo inclinado",
+      "torneira",
+      "bramosidade",
+      "temperatura",
+      "como servir chopp",
+      "tirar chope",
+      "servir chopp"
+    ]
+  },
+  "106": {
+    "id": 106,
+    "pergunta": "Chopp não está saindo. O que fazer?",
+    "resposta": "Verifique se a válvula de vazão do chope está na posição correta. Ela deve estar aproximadamente a 45°. Em seguida, verifique se a válvula conectada ao barril está com o gatilho para cima. E cheque também se o cilindro de CO2 está aberto. Certifique-se, pelo peso do barril, se ainda tem chope e pelo peso do cilindro, se ainda há CO2. Se isso não funcionar, pode ser que a chopeira tenha congelado. Neste caso, recomendamos tirar a chopeira da tomada e, após 3 a 5 minutos, ligar tudo novamente. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 98, 99, 100, 101, 102, 103, 104, 105]",
+    "palavras_chave": [
+      "chopp não sai",
+      "chopeira sem fluxo",
+      "não sai chopp",
+      "válvula de vazão",
+      "gatilho",
+      "cilindro CO2",
+      "barril vazio",
+      "chopeira congelou",
+      "tomada",
+      "problema",
+      "sem chopp",
+      "chopeira travada"
+    ]
+  },
+  "107": {
+    "id": 107,
+    "pergunta": "Como instalar corretamente a chopeira (modelo BIB)?",
+    "resposta": "Retire o lacre e engate a válvula extratora no barril BIB. Abra a válvula de vazão do ar e ligue a chopeira na tomada. Ligue o botão de compressor de ar e, após a sangria, ligue o botão da chopeira. Regule a vazão do líquido, deixando a válvula que está na torneira em 45 graus. Ou até que fique com o fluxo ideal para consumo. Agora é só aproveitar. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 106, 107, 108, 109, 110, 111, 112]",
+    "palavras_chave": [
+      "instalar chopeira BIB",
+      "modelo BIB",
+      "chopeira BIB",
+      "engate barril BIB",
+      "compressor de ar",
+      "sangria BIB",
+      "válvula de vazão ar",
+      "ligar chopeira BIB",
+      "montagem chopeira BIB"
+    ]
+  },
+  "108": {
+    "id": 108,
+    "pergunta": "A chopeira não liga. O que fazer?",
+    "resposta": "O primeiro passo é verificar se a chopeira está ligada corretamente à tomada. Não recomendamos que liguem em extensões ou adaptadores. Por fim, verifique se o aparelho é 110 ou 220 volts e se a tomada possui a voltagem correta indicada na chopeira. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 113, 114, 115, 116]",
+    "palavras_chave": [
+      "chopeira não liga",
+      "não está ligando",
+      "chopeira desligada",
+      "tomada",
+      "extensões",
+      "adaptadores",
+      "voltagem",
+      "110v",
+      "220v",
+      "chopeira sem ligar"
+    ]
+  },
+  "109": {
+    "id": 109,
+    "pergunta": "Como desinstalar a chopeira?",
+    "resposta": "Antes de tudo, retire o equipamento da tomada. Feche o cilindro de CO2 e retire a pressão com a válvula de segurança do regulador ou da extratora. Esse passo é muito importante para não voar chope para todo lado. Em seguida, desconecte a mangueira do cilindro pressionando a trava do engate rápido para baixo e puxando-a para cima. Por último, enrole a tomada e as mangueiras na torneira da chopeira. [cite_start]Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 117, 118, 119, 120, 121, 122]",
+    "palavras_chave": [
+      "desinstalar chopeira",
+      "remover chopeira",
+      "desmontar chopeira",
+      "cilindro CO2",
+      "retirar pressão",
+      "válvula de segurança",
+      "válvula extratora",
+      "desconectar mangueira",
+      "como remover chopeira"
+    ]
   }
 }
+
