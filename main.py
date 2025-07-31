@@ -7,6 +7,8 @@ from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # --- Importações NLTK e Scikit-learn ---
 import nltk
+# O download das stopwords e do rslp será feito no Render Build Command.
+# Apenas a importação das classes é necessária aqui.
 from nltk.corpus import stopwords
 from nltk.stem import RSLPStemmer # Para português
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -33,17 +35,23 @@ faq_vectors = None
 faq_ids_indexed = [] # Para mapear de volta do índice do vetorizador para o FAQ ID
 
 # --- Inicializar Stemmer e Stop Words ---
+# REMOVEMOS os blocos try/except nltk.downloader.DownloadError
+# pois o download já é garantido no Build Command do Render.
+# Se o recurso não for encontrado aqui, é um problema de ambiente no Render.
 try:
-    # Baixar os dados do NLTK (roda uma vez na primeira execução ou se não encontrar os dados)
     nltk.data.find('corpora/stopwords')
-except nltk.downloader.DownloadError:
-    print("Baixando dados do NLTK: stopwords...")
-    nltk.download('stopwords')
+    print("Dados do NLTK: stopwords encontrados.")
+except LookupError:
+    print("ERRO: Stopwords do NLTK não encontradas após o build. Verifique o comando de build do Render.")
+    exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
+
 try:
     nltk.data.find('stemmers/rslp')
-except nltk.downloader.DownloadError:
-    print("Baixando dados do NLTK: rslp (stemmer para português)...")
-    nltk.download('rslp')
+    print("Dados do NLTK: rslp (stemmer para português) encontrados.")
+except LookupError:
+    print("ERRO: Stemmer RSLP do NLTK não encontrado após o build. Verifique o comando de build do Render.")
+    exit(1) # Força o encerramento se os dados essenciais não estiverem presentes
+
 
 stemmer = RSLPStemmer()
 stop_words = set(stopwords.words('portuguese'))
