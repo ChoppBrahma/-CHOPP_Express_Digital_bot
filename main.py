@@ -56,6 +56,8 @@ def preprocess_text(text):
     if not text:
         return ""
     text = str(text).lower().strip() # Garante que é string
+    # Considerar remover pontuação antes de splitar para melhor stemming
+    # Ex: text = re.sub(r'[^\w\s]', '', text)
     words = [stemmer.stem(word) for word in text.split() if word not in stop_words and len(word) > 1] # Ignorar palavras de 1 letra
     return " ".join(words)
 
@@ -231,7 +233,7 @@ def webhook():
 
                 print(f"----> Mensagem recebida do chat {chat_id}: '{text}'")
 
-                # --- NOVO: Tratamento do comando de recarregar FAQ ---
+                # --- Tratamento do comando de recarregar FAQ (já existente em main (4).py) ---
                 if text == '/recarregarfaq':
                     if ADMIN_CHAT_ID and str(chat_id) == ADMIN_CHAT_ID:
                         bot.send_message(chat_id, "Iniciando recarregamento do FAQ. Isso pode levar alguns segundos...")
@@ -244,13 +246,34 @@ def webhook():
                     else:
                         bot.send_message(chat_id, "Você não tem permissão para usar este comando.")
                         return 'OK', 200 # Encerra o processamento do update
-                # --- Fim do novo tratamento de comando ---
+                # --- Fim do tratamento de /recarregarfaq ---
+
+                # --- INÍCIO DA ADIÇÃO PARA O COMANDO /start ---
+                if text and text.lower() == '/start':
+                    # Mensagem de boas-vindas conforme sua imagem do chat
+                    response_text = "Olá! Eu sou o assistente virtual da Chopp Brahma Express. Posso te ajudar com dúvidas sobre nossos produtos, serviços, entregas, promoções e muito mais! Para começar, você pode me perguntar sobre:\n\n🍺 Quantos litros de chope para meu evento?\n⏰ Horários de entrega e retirada?\n💰 Preços e promoções (Choppback)?\n📍 Lojas e regiões de atendimento?\n\nOu, se preferir, me diga sua dúvida específica!"
+                    try:
+                        bot.send_message(chat_id, response_text, parse_mode='Markdown')
+                        print(f"----> Mensagem de boas-vindas '/start' enviada para o chat {chat_id}.")
+                    except telebot.apihelper.ApiTelegramException as e:
+                        print(f"ERRO Telegram API ao enviar mensagem de boas-vindas: {e}")
+                        if "Can't parse message text" in str(e) or "Bad Request: can't parse entities" in str(e):
+                            print("DICA: Texto da boas-vindas pode ter Markdown inválido. Tentando enviar sem parse_mode...")
+                            bot.send_message(chat_id, response_text, parse_mode=None)
+                        else:
+                            pass
+                    except Exception as e:
+                        print(f"ERRO geral ao enviar mensagem de boas-vindas: {e}")
+                        traceback.print_exc()
+                    return 'OK', 200 # Finaliza o processamento do webhook para o /start
+                # --- FIM DA ADIÇÃO PARA O COMANDO /start ---
+
 
                 response_text = ""
                 markup = None 
 
-                if text:
-                    faq_answer, faq_id_matched = find_faq_answer(text) # Agora usa a nova função de PLN
+                if text: # Este 'if text' agora lida com mensagens que NÃO são /recarregarfaq ou /start
+                    faq_answer, faq_id_matched = find_faq_answer(text) # Usa a nova função de PLN
 
                     if faq_answer:
                         response_text = faq_answer
@@ -271,9 +294,13 @@ def webhook():
                             print("DICA: Texto pode ter Markdown inválido. Tentando enviar sem parse_mode...")
                             bot.send_message(chat_id, response_text, parse_mode=None, reply_markup=markup) 
                         else:
-                            pass # Re-raise se for outro tipo de erro que não seja de parsing
+                            # Se for outro tipo de erro da API, loga e re-lança para visibilidade nos logs do Render
+                            print(f"ERRO FATAL de Telegram API, re-lançando: {e}")
+                            traceback.print_exc()
+                            raise 
                     except Exception as e:
                         print(f"ERRO geral ao enviar mensagem: {e}")
+                        traceback.print_exc()
                 else:
                     print(f"----> Mensagem recebida sem texto (ex: foto, sticker). Ignorando por enquanto.")
 
