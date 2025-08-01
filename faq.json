@@ -1,7 +1,7 @@
 {
-    "1": {
+  "1": {
     "id": 1,
-    "pergunta": "Boas-vindas / Saudações Iniciais",
+    "pergunta": "👋 Começar atendimento",
     "resposta": "Olá! Eu sou o assistente virtual da Chopp Brahma Express. Posso te ajudar com dúvidas sobre nossos produtos, serviços, entregas, promoções e muito mais!\n\nPara que eu possa te ajudar, você pode:\n🍻 Perguntar: 'Quantos litros de chope para meu evento?'\n🚚 Perguntar: 'Horários de entrega e retirada?'\n💰 Perguntar: 'Quais os preços e promoções?'\n📍 Perguntar: 'Onde ficam as lojas e regiões de atendimento?'\n\nOu, se preferir, me diga sua dúvida específica! Se eu não conseguir entender, vou te oferecer outras opções de contato.",
     "palavras_chave": [
       "oi",
@@ -40,13 +40,13 @@
   },
   "2": {
     "id": 2,
-    "pergunta": "Resposta de Dúvida Não Encontrada / Fallback",
+    "pergunta": "❓ Não achei minha dúvida",
     "resposta": "Desculpe, não consegui encontrar uma resposta precisa para sua pergunta no meu FAQ. 😔\n\nPor favor, tente perguntar de outra forma, use palavras-chave diferentes ou escolha um dos nossos temas:\n\n🍻 **Eventos e Quantidade** (ex: 'quantos litros para 30 pessoas?')\n🚚 **Entrega e Retirada** (ex: 'onde é a retirada?')\n💰 **Preços e Promoções** (ex: 'qual o preço do chopp?')\n\nSe ainda assim não encontrar o que precisa, clique no link abaixo para falar diretamente com nossa equipe:\n➡️ **Clique aqui para falar conosco no WhatsApp!**\nOu, se preferir, você pode nos ligar no (61) 3971-7502.\nEstamos prontos para te ajudar!",
     "palavras_chave": []
   },
   "3": {
     "id": 3,
-    "pergunta": "Não encontrei minha dúvida. Como posso ser atendido?",
+    "pergunta": "Falar com um atendente",
     "resposta": "Sentimos muito que você não tenha encontrado a resposta para sua dúvida em nosso FAQ. 😔\nPara um atendimento mais personalizado, por favor, clique no link abaixo para falar diretamente com nossa equipe via WhatsApp:\n📱 [**Clique aqui para falar conosco no WhatsApp!**](https://wa.me/556139717502)\nOu, se preferir, você pode nos ligar no **(61) 3971-7502**.\nEstamos prontos para te ajudar!",
     "palavras_chave": [
       "não encontrei",
@@ -93,7 +93,7 @@
   },
   "4": {
     "id": 4,
-    "pergunta": "Estilo de Resposta do Bot",
+    "pergunta": "Como o bot responde?",
     "resposta": "Olá! Minhas respostas são sempre as mais completas possíveis para te ajudar a resolver sua dúvida. Se precisar de algo mais conciso ou específico, por favor, reformule sua pergunta!",
     "palavras_chave": [
       "Vc pode dizer só sim ou não?",
@@ -142,7 +142,7 @@
   },
   "11": {
     "id": 11,
-    "pergunta": "Como saber quantos litros de chope preciso para o meu evento?",
+    "pergunta": "Quantos litros de chope preciso?",
     "resposta": "A recomendação inicial é 2 litros por pessoa em eventos de até 4 horas. Para um cálculo mais preciso, utilize a Calculadora da Chopp Brahma Express: https://www.choppbrahmaexpress.com.br/calculadora\n1️⃣ Informe o número de convidados\n2️⃣ Escolha a duração (2h, 4h, 6h ou mais)\n3️⃣ Indique o estilo de consumo: moderado, normal ou intenso\n🌡️ A ferramenta também ajusta o cálculo conforme a temperatura ambiente.\n🍻 Assim, você descobre exatamente quantos litros serão necessários para ninguém ficar sem chope.",
     "palavras_chave": [
       "quantidade de litros",
@@ -187,9 +187,9 @@
       "quantidade de cerveja"
     ]
   },
-   "12": {
+  "12": {
     "id": 12,
-    "pergunta": "Qual é o horário de atendimento de vocês?",
+    "pergunta": "Qual o horário de atendimento?",
     "resposta": "🕘 Segunda a sexta: das 09h às 18h\n🕗 Sábado: das 08h às 12h\n🚫 Domingo: fechado",
     "palavras_chave": [
       "horário de funcionamento",
@@ -218,7 +218,7 @@
   },
   "13": {
     "id": 13,
-    "pergunta": "Quais são os documentos exigidos para o empréstimo dos equipamentos?",
+    "pergunta": "📄 Regras de empréstimo e devolução",
     "resposta": "Por motivos de segurança, alguns documentos podem ser requisitados pela franquia para o empréstimo dos equipamentos (barril, chopeira e outros).",
     "palavras_chave": [
       "documentos obrigatórios",
@@ -250,7 +250,7 @@
   },
   "14": {
     "id": 14,
-    "pergunta": "Como encontrar a loja Chopp Brahma Express mais próxima?",
+    "pergunta": "Onde fica a loja mais próxima?",
     "resposta": "No site do Chopp Brahma Express, insira o número do CEP. O sistema indica automaticamente a loja mais próxima para entrega e suporte. O pedido deve ser feito com pelo menos três dias de antecedência da data do evento.",
     "palavras_chave": [
       "loja mais próxima",
@@ -282,7 +282,7 @@
   },
   "15": {
     "id": 15,
-    "pergunta": "Quais produtos estão disponíveis e como selecionar?",
+    "pergunta": "Produtos disponíveis e como escolher?",
     "resposta": "Cada loja tem um portfólio específico. Acesse o site, consulte os produtos e serviços da sua região e adicione ao carrinho. Há diferentes marcas de chope, tamanhos de barril (10L, 30L, 50L) e também carvão, gelo, refrigerantes, chopeiro, mesas, cadeiras, etc.",
     "palavras_chave": [
       "portfólio",
@@ -317,7 +317,7 @@
   },
   "16": {
     "id": 16,
-    "pergunta": "Como agendar a entrega e devolução dos produtos?",
+    "pergunta": "Agendar entrega e devolução",
     "resposta": "Após escolher seus produtos, agende no site tanto a data de entrega quanto a de devolução. A Chopeira e demais itens são emprestados e devem ser devolvidos conforme o combinado.",
     "palavras_chave": [
       "agendamento",
@@ -349,7 +349,7 @@
   },
   "17": {
     "id": 17,
-    "pergunta": "Quais são as formas de pagamento?",
+    "pergunta": "Formas de pagamento aceitas",
     "resposta": "O pagamento no site é feito via Cartão de Crédito à vista (Visa, Mastercard, Amex, Diners, Elo). Algumas lojas aceitam boleto — essa opção deve ser confirmada com a unidade responsável.",
     "palavras_chave": [
       "formas de pagamento",
@@ -381,7 +381,7 @@
   },
   "18": {
     "id": 18,
-    "pergunta": "Como acessar a área de cadastro?",
+    "pergunta": "Acessar cadastro ou login",
     "resposta": "Com a reformulação do site, é necessário criar um novo login e senha. Acesse: https://choppbrahmaexpress.com.br/customer/account/login/",
     "palavras_chave": [
       "cadastro",
@@ -411,7 +411,7 @@
   },
   "19": {
     "id": 19,
-    "pergunta": "Todos os produtos estão disponíveis para todas as regiões?",
+    "pergunta": "Produtos disponíveis na minha região?",
     "resposta": "Os produtos estão sujeitos à disponibilidade de cada Loja Chopp Brahma Express. No site, ao inserir seu CEP, será exibido o portfólio e disponibilidade específicos da loja mais próxima.",
     "palavras_chave": [
       "disponibilidade regional",
@@ -452,7 +452,7 @@
   },
   "20": {
     "id": 20,
-    "pergunta": "É possível contratar o serviço de chopeiro?",
+    "pergunta": "Contratar chopeiro é possível?",
     "resposta": "Sim! A disponibilidade depende da loja. Ao inserir o CEP no site, essa informação é indicada. Após confirmar o pedido, você também pode verificar com a loja responsável — o contato estará no e-mail de confirmação.",
     "palavras_chave": [
       "chopeiro",
@@ -482,7 +482,7 @@
   },
   "21": {
     "id": 21,
-    "pergunta": "Como acompanhar o status do pedido?",
+    "pergunta": "📦 Acompanhar status do pedido",
     "resposta": "O acompanhamento é feito diretamente com a loja Chopp Brahma Express responsável, informada após a escolha do CEP. O contato estará no e-mail de confirmação/aprovação do pagamento.",
     "palavras_chave": [
       "status do pedido",
@@ -512,7 +512,7 @@
   },
   "22": {
     "id": 22,
-    "pergunta": "Como é feita a entrega do serviço?",
+    "pergunta": "🚚 Como funciona a entrega?",
     "resposta": "O serviço é entregue no local indicado no pedido. Um técnico leva o equipamento e realiza a instalação da Chopeira. É necessário que um responsável esteja presente para receber o técnico. Locais com escadas podem ter restrições. Também é possível retirar o pedido diretamente na loja.",
     "palavras_chave": [
       "entrega",
@@ -543,7 +543,7 @@
   },
   "23": {
     "id": 23,
-    "pergunta": "Como calcular o valor da entrega?",
+    "pergunta": "💰 Valor do frete e simulação",
     "resposta": "O valor do frete varia de acordo com o endereço informado no momento do pedido. A simulação é feita automaticamente no site.",
     "palavras_chave": [
       "valor de entrega",
@@ -573,7 +573,7 @@
   },
   "24": {
     "id": 24,
-    "pergunta": "A compra inclui a Chopeira e barril?",
+    "pergunta": "Compra inclui chopeira e barril?",
     "resposta": "Não. A compra é do Chopp. A Chopeira, o barril e os demais itens são emprestados gratuitamente — devem ser devolvidos conforme o combinado com a loja.",
     "palavras_chave": [
       "empréstimo de equipamentos",
@@ -603,7 +603,7 @@
   },
   "25": {
     "id": 25,
-    "pergunta": "O que inclui o kit Chopp Brahma Express?",
+    "pergunta": "🎁 O que vem no kit Chopp Brahma?",
     "resposta": "O kit inclui: 1 Chopeira, manômetro/regulador, válvula extratora (por barril/sabor), cilindro de gás (CO₂ ou N₂), e mangueiras para conexão. A imagem no site é ilustrativa — a loja define o modelo ideal conforme o evento.",
     "palavras_chave": [
       "kit chopeira",
@@ -633,7 +633,7 @@
   },
   "26": {
     "id": 26,
-    "pergunta": "O que é necessário para instalar a Chopeira elétrica?",
+    "pergunta": "Requisitos para instalar chopeira elétrica",
     "resposta": "Verifique a voltagem do local (110V ou 220V), reserve uma mesa ou superfície firme próxima a uma tomada exclusiva e longe de fontes de calor.",
     "palavras_chave": [
       "instalação chopeira",
@@ -663,7 +663,7 @@
   },
   "27": {
     "id": 27,
-    "pergunta": "Como servir o melhor Chopp?",
+    "pergunta": "🍺 Como servir o chopp corretamente?",
     "resposta": "Incline o copo a 45°, puxe a alavanca para frente para servir com equilíbrio entre líquido e espuma. Depois, leve a alavanca para trás para formar o colarinho. O ideal é manter dois dedos de espuma para preservar o aroma e a qualidade.",
     "palavras_chave": [
       "servir chopp",
@@ -693,7 +693,7 @@
   },
   "28": {
     "id": 28,
-    "pergunta": "O que fazer se o Chopp estiver com problema de qualidade?",
+    "pergunta": "⚠️ Problemas com o chopp: o que fazer?",
     "resposta": "Caso perceba alteração no sabor ou qualidade do Chopp, entre em contato via zap da loja: https://wa.me/556139717502",
     "palavras_chave": [
       "problema no chopp",
@@ -722,7 +722,7 @@
   },
   "29": {
     "id": 29,
-    "pergunta": "Qual o prazo de validade do Chopp?",
+    "pergunta": "📅 Qual a validade do chopp?",
     "resposta": "O prazo médio de validade do Chopp é de 10 dias após a fabricação. Após aberto e instalado, deve ser consumido em até 2 dias para garantir frescor e qualidade.",
     "palavras_chave": [
       "validade do chopp",
@@ -751,7 +751,7 @@
   },
   "30": {
     "id": 30,
-    "pergunta": "Como pedir mais Chopp ou produtos extras?",
+    "pergunta": "➕ Como pedir chopp extra?",
     "resposta": "Se faltarem 3 ou mais dias para o evento, faça um novo pedido no site. Se faltarem menos de 3 dias, ou se for no dia do evento, ligue diretamente para a loja responsável (contato no e-mail de confirmação). A entrega adicional depende da disponibilidade e horário da loja.",
     "palavras_chave": [
       "pedido extra",
@@ -781,7 +781,7 @@
   },
   "31": {
     "id": 31,
-    "pergunta": "O pedido pode ser cancelado?",
+    "pergunta": "❌ Posso cancelar meu pedido?",
     "resposta": "Sim. O cancelamento deve ser feito com até 1 dia de antecedência junto à loja responsável (contato no e-mail de confirmação). Se o pagamento já tiver sido aprovado, o estorno pode levar até 3 meses. Caso o pedido já tenha sido entregue, não será possível cancelar.",
     "palavras_chave": [
       "cancelamento de pedido",
@@ -810,7 +810,7 @@
   },
   "32": {
     "id": 32,
-    "pergunta": "O que é o Choppback?",
+    "pergunta": "💰 O que é Choppback?",
     "resposta": "💰 Ao realizar uma compra no site, 5% do valor pago volta como créditos na sua conta. Você poderá utilizá-los em compras futuras como forma de desconto.",
     "palavras_chave": [
       "choppback",
@@ -840,7 +840,7 @@
   },
   "33": {
     "id": 33,
-    "pergunta": "Como faço para me cadastrar no Choppback?",
+    "pergunta": "Como se cadastrar no Choppback?",
     "resposta": "📝 Após fazer seu cadastro no site e realizar sua primeira compra, você já começa a participar automaticamente do programa Choppback.",
     "palavras_chave": [
       "cadastro",
@@ -869,7 +869,7 @@
   },
   "34": {
     "id": 34,
-    "pergunta": "Quais produtos são elegíveis ao Choppback?",
+    "pergunta": "Produtos válidos para o Choppback?",
     "resposta": "✅ Todos os produtos vendidos no site estão elegíveis ao Choppback, desde que sua compra totalize R$50,00 ou mais (excluindo frete).",
     "palavras_chave": [
       "produtos válidos",
@@ -898,7 +898,7 @@
   },
   "35": {
     "id": 35,
-    "pergunta": "Quanto de Choppback posso ganhar?",
+    "pergunta": "Quanto posso ganhar com Choppback?",
     "resposta": "🎯 Você ganha 5% do valor pago nos produtos por compra, com limite máximo de R$100,00 em crédito por pedido.",
     "palavras_chave": [
       "porcentagem",
@@ -927,7 +927,7 @@
   },
   "36": {
     "id": 36,
-    "pergunta": "Como consultar meu saldo e extrato do Choppback?",
+    "pergunta": "Ver saldo/extrato do Choppback",
     "resposta": "📊 Faça login com o e-mail cadastrado, clique em \"Choppback\" no menu à direita e confira seu saldo e extrato com todas as movimentações.",
     "palavras_chave": [
       "consulta de saldo",
@@ -957,7 +957,7 @@
   },
   "37": {
     "id": 37,
-    "pergunta": "Como usar meus créditos do Choppback?",
+    "pergunta": "Como usar créditos do Choppback?",
     "resposta": "🛍️ Ao finalizar a compra, na etapa de pagamento, você escolhe quantos créditos do Choppback quer utilizar como desconto.",
     "palavras_chave": [
       "usar créditos",
@@ -986,7 +986,7 @@
   },
   "38": {
     "id": 38,
-    "pergunta": "Meus créditos têm validade?",
+    "pergunta": "Validade dos créditos Choppback",
     "resposta": "⏳ Sim. Todos os créditos têm validade de 180 dias a partir da data em que foram concedidos.",
     "palavras_chave": [
       "validade",
@@ -1015,7 +1015,7 @@
   },
   "39": {
     "id": 39,
-    "pergunta": "Em quanto tempo meu crédito fica disponível?",
+    "pergunta": "Quando o crédito Choppback fica disponível?",
     "resposta": "⌚ O crédito do Choppback é liberado em até 7 dias após o faturamento do pedido. Ele pode ser cancelado se o pagamento não for confirmado ou o pedido for incompleto.",
     "palavras_chave": [
       "tempo de liberação",
@@ -1044,7 +1044,7 @@
   },
   "40": {
     "id": 40,
-    "pergunta": "Em quais produtos posso usar meus créditos?",
+    "pergunta": "Onde posso usar os créditos Choppback?",
     "resposta": "🛒 Os créditos do Choppback podem ser usados na compra de qualquer produto da loja online Chopp Brahma Express.",
     "palavras_chave": [
       "uso do crédito",
@@ -1073,7 +1073,7 @@
   },
   "41": {
     "id": 41,
-    "pergunta": "Não consegui usar meus créditos. O que fazer?",
+    "pergunta": "❓ Problemas ao usar créditos?",
     "resposta": "☎️ Verifique se está logado com o e-mail correto e se os créditos ainda estão válidos. Se o problema persistir, envie um e-mail para atendimento@choppbrahmaexpress.com.br ou ligue para 0800 888 1021.",
     "palavras_chave": [
       "erro no uso",
@@ -1102,7 +1102,7 @@
   },
   "42": {
     "id": 42,
-    "pergunta": "Tem alguma forma de pagamento que não acumula Choppback?",
+    "pergunta": "Pagamento que não acumula Choppback?",
     "resposta": "🚫 Pagamentos feitos com Vale-Presente ou Voucher não geram crédito Choppback.",
     "palavras_chave": [
       "exclusão",
@@ -1130,7 +1130,7 @@
   },
   "43": {
     "id": 43,
-    "pergunta": "O valor do frete também acumula crédito no Choppback?",
+    "pergunta": "Frete gera crédito Choppback?",
     "resposta": "📦 Não. O crédito é calculado apenas sobre o valor dos produtos. O frete não entra no cálculo.",
     "palavras_chave": [
       "cálculo do crédito",
@@ -1158,7 +1158,7 @@
   },
   "44": {
     "id": 44,
-    "pergunta": "Posso utilizar apenas uma parte do meu crédito?",
+    "pergunta": "Posso usar só parte dos créditos?",
     "resposta": "🎚️ Sim! No momento do pagamento, você escolhe quanto dos seus créditos deseja aplicar — total ou parcial.",
     "palavras_chave": [
       "uso parcial",
@@ -1185,7 +1185,7 @@
   },
   "45": {
     "id": 45,
-    "pergunta": "Posso usar cupons de desconto junto com o Choppback?",
+    "pergunta": "Posso usar cupom e Choppback juntos?",
     "resposta": "🎟️ Sim! Cupons e Choppback podem ser usados na mesma compra. O crédito será calculado sobre o valor com desconto.",
     "palavras_chave": [
       "cupom + crédito",
@@ -1213,7 +1213,7 @@
   },
   "46": {
     "id": 46,
-    "pergunta": "Não tenho Choppback suficiente. Posso pagar o restante com outra forma de pagamento?",
+    "pergunta": "Posso completar com outro pagamento?",
     "resposta": "💳 Sim! Você pode usar parte dos créditos e completar o restante com qualquer método de pagamento disponível no site.",
     "palavras_chave": [
       "pagamento híbrido",
@@ -1241,7 +1241,7 @@
   },
   "47": {
     "id": 47,
-    "pergunta": "Em compras parceladas, como o Choppback será creditado?",
+    "pergunta": "Choppback em compras parceladas",
     "resposta": "🧾 O valor total do crédito entra na sua conta de uma vez só, independente do número de parcelas. Mas será cancelado em caso de não confirmação de pagamento ou pedido incompleto.",
     "palavras_chave": [
       "parcelamento",
@@ -1270,7 +1270,7 @@
   },
   "48": {
     "id": 48,
-    "pergunta": "Como fica o crédito se eu pagar com Vale-Presente ou Choppback?",
+    "pergunta": "Uso de crédito com vale ou Choppback",
     "resposta": "🪙 O crédito será gerado apenas sobre a parte paga com outra forma (ex: cartão). Valores pagos com Choppback ou Vale-Presente não acumulam novo crédito.",
     "palavras_chave": [
       "forma de pagamento",
@@ -1298,7 +1298,7 @@
   },
   "49": {
     "id": 49,
-    "pergunta": "Pode haver diferença de validade do crédito entre produtos?",
+    "pergunta": "Validade do crédito varia por produto?",
     "resposta": "🗓️ Não. Todo crédito gerado tem validade uniforme de 180 dias, independente do tipo de produto comprado.",
     "palavras_chave": [
       "validade unificada",
@@ -1326,7 +1326,7 @@
   },
   "50": {
     "id": 50,
-    "pergunta": "Se a compra for cancelada, o que acontece com o crédito?",
+    "pergunta": "Cancelamento afeta o crédito?",
     "resposta": "🚫 Os créditos gerados a partir daquela compra serão automaticamente cancelados e perderão a validade.",
     "palavras_chave": [
       "cancelamento",
@@ -1354,7 +1354,7 @@
   },
   "51": {
     "id": 51,
-    "pergunta": "Por que não acumulei mais Choppback em uma compra acima de R$2.000,00?",
+    "pergunta": "Limite de crédito em compras altas?",
     "resposta": "📉 Mesmo que o valor total ultrapasse R$2.000,00, o limite máximo por compra é de R$100,00 em créditos de Choppback.",
     "palavras_chave": [
       "limite por compra",
@@ -1382,7 +1382,7 @@
   },
   "52": {
     "id": 52,
-    "pergunta": "Posso usar meu saldo do Choppback em uma loja física?",
+    "pergunta": "Choppback vale na loja física?",
     "resposta": "🛑 Não. O Choppback é exclusivo para compras online realizadas no site oficial: https://www.choppbrahmaexpress.com.br",
     "palavras_chave": [
       "uso online",
@@ -1408,9 +1408,9 @@
       "choppback site"
     ]
   },
-   "53": {
+  "53": {
     "id": 53,
-    "pergunta": "Vocês atendem na minha região?",
+    "pergunta": "🗺️ Vocês atendem na minha região?",
     "resposta": "📍 Atendemos sim! Nosso serviço cobre Brasília e diversas regiões próximas. Se você está em alguma dessas localidades, estamos prontos para entregar aí:\n- Água Quente\n- Águas Claras\n- Arniqueira\n- Brazlândia\n- Ceilândia\n- Gama\n- Guará\n- Núcleo Bandeirante\n- Park Way\n- Recanto das Emas\n- Riacho Fundo\n- Riacho Fundo II\n- Samambaia\n- Santa Maria\n- SCIA/Estrutural\n- SIA\n- Sol Nascente / Pôr do Sol\n- Taguatinga\n- Valparaíso de Goiás\n- Vicente Pires\n🎯 Basta informar o endereço completo no seu pedido e confirmaremos a entrega.",
     "palavras_chave": [
       "entrega em brasília",
@@ -1483,7 +1483,7 @@
   },
   "55": {
     "id": 55,
-    "pergunta": "Qual o preço e os descontos para o Chopp Brahma?",
+    "pergunta": "💸 Preço e descontos do Chopp Brahma",
     "resposta": "🍻 Com certeza! Temos várias opções pra você garantir seu Chopp Brahma geladinho com desconto — e o melhor, entregue direto na sua casa, prontinho pra servir:\n30L: de R$ 564,00 por R$ 535,80 (5% OFF)\n50L: de R$ 940,00 por R$ 846,00 (10% OFF)\n100L: de R$ 1.880,00 por R$ 1.692,00 (10% OFF)\n150L: de R$ 2.820,00 por R$ 2.397,00 (15% OFF)\n200L: de R$ 3.760,00 por R$ 3.008,00 (20% OFF)\n250L: de R$ 4.700,00 por R$ 3.760,00 (20% OFF)\n300L: de R$ 5.640,00 por R$ 4.512,00 (20% OFF)\n⚠️ Lembre-se: os valores podem variar, então sempre consulte o site para confirmar — a promoção é válida enquanto durar a oferta por lá! 😉",
     "palavras_chave": [
       "preço",
@@ -1523,7 +1523,7 @@
   },
   "56": {
     "id": 56,
-    "pergunta": "Como funciona a logística de entrega e quais os horários?",
+    "pergunta": "⏱️ Horários e rotas de entrega",
     "resposta": "Nossa logística de entrega é feita por rotas. Entregamos de acordo com o endereço dos pedidos, por isso NÃO FAZEMOS AGENDAMENTO DE HORÁRIO.\n🚛 Rotas de segunda a sexta:\n- Rotas da manhã: entregas realizadas entre 9:30 a 13:00.\n- Rotas da tarde: entregas realizadas entre 14:00 a 19:00.\nObs: excepcionalmente nas sextas-feiras a rota da tarde pode se estender para além das 19h de acordo com a quantidade de pedidos.\n🚛 Rotas de sábado:\n- ENTREGAS REALIZADAS ENTRE 09:00 a 14:00",
     "palavras_chave": [
       "logística de entrega",
@@ -1560,7 +1560,7 @@
   },
   "57": {
     "id": 57,
-    "pergunta": "Como funciona a retirada de pedidos? Documentos, dias e horários?",
+    "pergunta": "📍 Retirada: horários e documentos",
     "resposta": "Para retirada é necessário apresentar um documento com foto e um comprovante de residência.\n📅 Retirada de segunda a sexta-feira: das 9h às 18h.\n📅 Retirada aos sábados: das 9h às 12h.",
     "palavras_chave": [
       "retirada",
@@ -1596,7 +1596,7 @@
   },
   "58": {
     "id": 58,
-    "pergunta": "Quais são as regras para devolução de barril lacrado?",
+    "pergunta": "🔁 Regras para devolução de barril",
     "resposta": "Regras para Devolução de Barril Lacrado:\nSerá emitida uma carta de crédito, com validade de até 90 dias após a coleta, com valor baseado no preço atual do chopp.\nPara solicitações feitas com 7 dias de antecedência do evento, será cobrada uma taxa adicional de frete, caso haja entrega.",
     "palavras_chave": [
       "devolução",
@@ -1632,7 +1632,7 @@
   },
   "59": {
     "id": 59,
-    "pergunta": "Quais são as recomendações para instalação da chopeira?",
+    "pergunta": "Instalar chopeira: o que preparar?",
     "resposta": "Recomendações da Brahma Express para facilidade em momento de instalação:\n° Tenha extensão exclusiva para chopeira preparada para o dia de instalação\n° Local definido com mesa que possa suportar nossa chopeira (NÃO PODE SER MESA DE VIDRO)\n° No local onde irá ficar nosso produto, tem escadas? Elevador? Por favor nos informe\n° Recomendamos um acesso fácil e sem obstruções no dia da instalação, para que ocorra com fluidez, rapidez e otimização",
     "palavras_chave": [
       "instalação chopeira",
@@ -1704,7 +1704,7 @@
   },
   "61": {
     "id": 61,
-    "pergunta": "Como funciona o suporte SOS? Horários, atendimento e contatos?",
+    "pergunta": "🆘 Como funciona o suporte SOS?",
     "resposta": "Nosso suporte SOS funciona nos seguintes dias e horários:\n- Quinta-feira: até 20h\n- Sexta-feira: até 22h\n- Sábado: até 22h\n- Domingo: até 18h\nPedidos com encomenda de ENTREGA são atendidos pelo SOS presencialmente.\nPedidos de RETIRADA são atendidos por chamada de vídeo, *exceto em casos que realmente seja necessária a nossa ida,* como quando a chopeira não funciona ou o gás acaba.\nNosso suporte atende apenas dentro do DF — não atendemos entorno.\n📞 Telefone SOS Loja: (61) 99451-4488\n📞 Suporte Ambev: 0800 888 1021 (domingo a domingo, das 9h às 23h)\nLinks úteis:\n- Site: https://qr.me-qr.com/l/sites\n- Zap SOS: https://qr.me-qr.com/l/sos-zap",
     "palavras_chave": [
       "suporte SOS",
@@ -1763,7 +1763,7 @@
   },
   "62": {
     "id": 62,
-    "pergunta": "Como funciona a coleta/recolha do equipamento (chopeira, barril)?",
+    "pergunta": "📦 Como é feita a coleta dos equipamentos?",
     "resposta": "⚠️ AVISO INFORMATIVO — RECOLHA DO MATERIAL COMODATADO\nEste informativo orienta a coleta dos materiais (chopeira, barril, etc.) de acordo com a rota estabelecida durante o horário comercial.\n**CRITÉRIO:**\nAs coletas seguem uma rota definida pela empresa para atender o maior número de clientes por região, podendo ser alterada semanalmente conforme a demanda.\n**HORÁRIO DE COLETA | ROTA:**\nNão realizamos coleta agendada. As coletas ocorrem por período:\n🕘 Manhã / Tarde\n📆 Segunda à Terça-feira — das 9h às 18h\n**REGIME DE EXCEÇÃO (ALTA DEMANDA):** Conforme critério da empresa, a coleta pode se estender para:\n📆 Quarta-feira — das 9h às 18h\n🚫 Não fazemos desvios de rota para atendimento personalizado.\n**COMUNICAÇÃO COM O CLIENTE:**\n- A empresa fará contato durante a rota para garantir a presença de um responsável.\n- Em caso de insucesso no contato, a rota será reavaliada e reprogramada até quarta-feira.\n- Se houver imprevistos, o cliente deve entrar em contato com a loja para entender a rota.\n- Caso a rota não atenda à necessidade, o cliente deve providenciar um substituto para liberar o material.\n**MULTA:**\nA partir de quinta-feira será cobrada taxa diária de R$100,00/dia pela não disponibilidade de recolha.\n**IMPORTANT!**\n- Todos os materiais devem estar prontos e em perfeita condição para recolha.\n- É necessário que haja um responsável no local para liberar o acesso.\n- A guarda dos materiais é responsabilidade do cliente, sujeito a cobrança em caso de perda ou dano.\n- Serão feitas fotos e filmagem dos materiais para respaldo.\n📦 Agradecemos a colaboração! Equipe de Logística — Chopp Brahma",
     "palavras_chave": [
       "coleta",
@@ -1803,7 +1803,7 @@
   },
   "63": {
     "id": 63,
-    "pergunta": "Quais dados preciso informar para fazer um cadastro ou pedido?",
+    "pergunta": "📝 Quais dados preciso informar?",
     "resposta": "Para que possamos processar seu pedido e emitir a Ordem de Serviço e Nota Fiscal, precisamos dos seguintes dados. Por favor, preencha-os com atenção:\n**DADOS DO EVENTO:**\n📅 *Data do evento:*\n⏰ *Horário do evento:*\n🗺️ *Endereço do evento:*\n✉️ *CEP do evento:*\n🗓️ *Data da entrega (do equipamento/chopp):*\n**DADOS PESSOAIS / EMPRESARIAIS:**\n📧 *E-mail:*\n👤 *Nome completo / Razão Social:*\n🏢 *Nome Fantasia (para CNPJ, se aplicável):*\n📞 *Telefone:*\n🆔 *CPF / CNPJ:*\n💳 *RG / Órgão Emissor (para CPF, se aplicável):*\n📝 *Inscrição Estadual (para CNPJ, se aplicável):*\n🏡 *Endereço da sua residência:*\n📮 *CEP da residência:*\n**DETALHES DO PEDIDO:**\n🍺 *Quantidade de Litros de Chopp:*\n💰 *Forma de Pagamento (Pix ou Cartão):*\nAgradecemos a sua colaboração! Assim que tivermos essas informações, agilizaremos seu pedido.",
     "palavras_chave": [
       "cadastro",
@@ -1840,7 +1840,7 @@
   },
   "64": {
     "id": 64,
-    "pergunta": "Como pedir chopp Brahma Express?",
+    "pergunta": "🍺 Como fazer um pedido?",
     "resposta": "Para pedir Chopp Brahma Express, você pode:\n\n1.  **Acessar o site oficial** da Chopp Brahma Express.\n2.  **Digitar seu CEP** para verificar a disponibilidade e as opções de entrega na sua região.\n3.  **Escolher o tipo e a quantidade de chopp** desejados, além de acessórios se precisar.\n4.  **Selecionar a voltagem da chopeira** compatível com sua residência ou local do evento.\n5.  **Finalizar o pedido** preenchendo seus dados, escolhendo a data de entrega/retirada e a forma de pagamento.\n\nVocê também pode verificar se há um ponto de venda físico próximo a você para retirada.\n\n_Beba com moderação._",
     "palavras_chave": [
       "como pedir chopp",
@@ -1853,23 +1853,6 @@
       "passos para pedir",
       "processo de compra",
       "onde pedir chopp"
-    ]
-  },
-  
-  "100": {
-    "id": 100,
-    "pergunta": "Como trocar o barril de chope?",
-    "resposta": "Para trocar o barril, não é necessário desmontar todo o sistema. Basta apertar o gatilho da válvula extratora, a que está conectada ao barril. Levantar e girar no sentido anti-horário. Não precisa fechar o cilindro de serraduras. Em seguida, rompa o lacre do próximo barril. Conecte corretamente a válvula extratora no encaixe. Gire no sentido horário. Aperte o gatilho e abaixe. Pronto! Viu como é fácil? Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 62, 63, 64, 65, 66]",
-    "palavras_chave": [
-      "trocar barril",
-      "barril",
-      "substituir barril",
-      "troca de barril",
-      "novo barril",
-      "engate",
-      "válvula extratora",
-      "barril de chope",
-      "troca"
     ]
   },
   "65": {
@@ -2026,6 +2009,21 @@
       "desconectar mangueira",
       "como remover chopeira"
     ]
+  },
+  "74": {
+    "id": 74,
+    "pergunta": "🔄 Como trocar o barril de chopp?",
+    "resposta": "Para trocar o barril, não é necessário desmontar todo o sistema. Basta apertar o gatilho da válvula extratora, a que está conectada ao barril. Levantar e girar no sentido anti-horário. Não precisa fechar o cilindro de serraduras. Em seguida, rompa o lacre do próximo barril. Conecte corretamente a válvula extratora no encaixe. Gire no sentido horário. Aperte o gatilho e abaixe. Pronto! Viu como é fácil? Caso o problema persista, entre em contato com o Serviço de Assistência Técnica. [cite: 62, 63, 64, 65, 66]",
+    "palavras_chave": [
+      "trocar barril",
+      "barril",
+      "substituir barril",
+      "troca de barril",
+      "novo barril",
+      "engate",
+      "válvula extratora",
+      "barril de chope",
+      "troca"
+    ]
   }
 }
-
