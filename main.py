@@ -136,13 +136,23 @@ load_faq()
 # --- Função para encontrar a melhor correspondência no FAQ (PLN AVANÇADO) ---
 def find_faq_answer(query):
     """
-    Encontra a melhor resposta do FAQ usando TF-IDF e similaridade de cosseno.
-    Retorna a resposta do FAQ e o ID da pergunta correspondente.
+    Primeiro tenta encontrar correspondência exata nas palavras-chave.
+    Se não encontrar, busca por similaridade com TF-IDF + cosseno.
     """
     if not faq_data or tfidf_vectorizer is None or faq_vectors is None:
         print("DEBUG: Componentes PLN não carregados em find_faq_answer. Retornando None.")
         return None, None
 
+    entrada = query.strip().lower()
+
+    # 🔍 1️⃣ Verificação direta nas palavras-chave
+    for faq_id, entry in faq_data.items():
+        for palavra in entry.get("palavras_chave", []):
+            if entrada == palavra.lower():
+                print(f"DEBUG: Match direto nas palavras-chave para entrada '{entrada}' no ID {faq_id}")
+                return entry.get("resposta"), faq_id
+
+    # 🧠 2️⃣ Similaridade TF-IDF
     processed_query = preprocess_text(query)
     if not processed_query:
         print("DEBUG: Query vazia após pré-processamento. Retornando None.")
@@ -170,6 +180,7 @@ def find_faq_answer(query):
     
     print(f"DEBUG: Nenhuma correspondência boa encontrada (similaridade {best_similarity:.4f} abaixo do limiar {MIN_SIMILARITY_THRESHOLD}).")
     return None, None
+
 
 # --- Função para encontrar e gerar botões de perguntas relacionadas ---
 def get_related_buttons(query, primary_faq_id=None, max_buttons=5):
