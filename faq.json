@@ -2029,44 +2029,29 @@
     "id": 75,
     "pergunta": "Mensagens de confirmação ou encerramento de conversa",
     "resposta": "👍 Qualquer coisa, é só chamar!",
-    "palavras_chave": ["ok", "beleza", "valeu", "show", "tá bom", "obrigado", "👍", "tudo certo", "blz"]
+    "palavras_chave": [
+      "ok", "beleza", "valeu", "show", "tá bom", "obrigado", "tudo certo", "blz",
+      "👍", "👌", "🙏", "✌️", "😉", "✅", "😎", "👍🏼", "👍🏽", "👍🏾", "👍🏿"
   },
   "76": {
   "id": 76,
   "pergunta": "Continuação de conversa / retornos informais",
   "resposta": "Claro! Pode mandar sua próxima dúvida. 😉",
   "palavras_chave": [
-    "só mais uma coisa",
-    "esqueci de perguntar",
-    "aproveitando",
-    "e outra coisa",
-    "mais uma dúvida",
-    "tem mais uma",
-    "lembrei de outra coisa",
-    "esqueci de dizer",
-    "faltou uma informação",
-    "ah, e outra coisa",
-    "opa, rapidinho",
-    "esqueci de algo",
-    "antes que eu esqueça",
-    "tem mais um detalhe",
-    "pera aí",
-    "e sobre isso",
-    "e aproveitando que estou aqui",
-    "tem mais uma pergunta",
-    "deixa eu aproveitar",
-    "já que estou aqui",
-    "lembrei agora",
-    "pera",
-    "espera um pouco",
-    "continuando",
-    "então",
-    "mais um ponto",
-    "ah, verdade",
-    "rapidinho",
-    "só pra completar",
-    "antes de finalizar",
-    "só um minuto"
+  "só mais uma coisa", "esqueci de perguntar", "aproveitando", "e outra coisa", "mais uma dúvida",
+  "tem mais uma", "lembrei de outra coisa", "ah, e outra coisa", "esqueci", "tem mais um detalhe",
+  "deixa eu aproveitar", "já que estou aqui", "pera", "opa", "😅", "🤔", "🧐", "🙋‍♂️", "🙋‍♀️"
+  ]
+},
+  "77": {
+  "id": 77,
+  "pergunta": "Encerramento educado ou finalização da conversa",
+  "resposta": "😊 Que bom poder ajudar! Qualquer coisa, é só chamar por aqui. Até mais!",
+  "palavras_chave": [
+  "valeu pela ajuda", "era isso", "obrigado pela ajuda", "até mais", "fechou", "agradecido",
+  "tmj", "valeu mesmo", "muito obrigado", "por enquanto é só", "encerra aqui", "até a próxima",
+  "vou nessa", "partiu", "encerrou", "acabou", "valeu, era só isso",
+  "👋", "😊", "😄", "🙌", "✨", "❤️", "🫶", "👊", "🤝"
   ]
 }
 }
