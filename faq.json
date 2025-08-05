@@ -104,11 +104,11 @@
       "Como você responde?"
     ]
   },
-  "5": {
+"5": {
     "id": 5,
-    "pergunta": "Reservado para contingência futura",
-    "resposta": "Este ID está reservado para uso futuro em mensagens de contingência.",
-    "palavras_chave": []
+    "pergunta": "Mensagens de confirmação ou encerramento de conversa",
+    "resposta": "👍 Qualquer coisa, é só chamar!",
+    "palavras_chave": ["ok", "beleza", "valeu", "show", "tá bom", "obrigado", "👍", "tudo certo", "blz"]
   },
   "6": {
     "id": 6,
